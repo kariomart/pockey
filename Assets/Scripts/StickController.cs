@@ -23,7 +23,7 @@ public class StickController : MonoBehaviour
     void OnTriggerEnter2D(Collider2D coll) {
         
         if (coll.gameObject.tag == "Puck" && !player.hasPuck) {
-            Debug.Log("puck hit by end of stick !");
+            //Debug.Log("puck hit by end of stick !");
             PuckController p = coll.gameObject.GetComponent<PuckController>();
             p.Control(endOfStick.transform);
             if (p.playerControllingPuck) {

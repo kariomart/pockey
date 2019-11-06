@@ -7,6 +7,9 @@ TagManager:
   - Puck
   - Wall
   - Goal
+  - Flap
+  - Bumper
+  - Slingshot
   layers:
   - Default
   - TransparentFX

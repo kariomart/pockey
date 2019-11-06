@@ -8,6 +8,7 @@ public class PuckController : MonoBehaviour
     SpriteRenderer spr;
     Rigidbody2D rb;
     Collider2D coll;
+    ParticleSystem trail;
 
     public Vector2 vel;
     public float maxSpd;
@@ -18,6 +19,9 @@ public class PuckController : MonoBehaviour
     Transform stick;
     public PlayerController playerControllingPuck;
 
+    public AudioClip sfx_bounce;
+    public AudioClip sfx_bumperHit;
+
 
 
     // Start is called before the first frame update
@@ -26,6 +30,7 @@ public class PuckController : MonoBehaviour
         spr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<CircleCollider2D>();
+        trail = GetComponentInChildren<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -50,17 +55,40 @@ public class PuckController : MonoBehaviour
         playerControllingPuck = null;
         vel = dir;
         spd = inheritedVel + maxSpd;
+        trail.Play();
     }
 
     public void Control(Transform stick) {
         this.stick = stick;
         controlled = true;
+        trail.Stop();
     }
 
     void OnCollisionEnter2D(Collision2D coll) {
 
         if (coll.gameObject.tag == "Wall") {
+            PlayBounceSound();
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.8f);
+            Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
+        }
+
+        if (coll.gameObject.tag == "Flap") {
+            PlayBounceSound();
+        }
+
+        if (coll.gameObject.tag == "Bumper" && !controlled) {
+            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * Random.Range(.9f, 1.3f));
+            int pts = Random.Range(2, 5);
+            StartCoroutine(PlayBumperSound(pts));
+            Master.me.livePoints += pts;
+            Master.me.UpdateUI();
+            coll.gameObject.GetComponent<BumperController>().StartCoroutine("ColorBlast");
+            Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
+        }
+
+        if (coll.gameObject.tag == "Slingshot") {
+            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * Random.Range(1.5f,2f));
+            Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
         }
 
     }
@@ -68,7 +96,20 @@ public class PuckController : MonoBehaviour
     void OnTriggerEnter2D(Collider2D coll) {
 
         if (coll.gameObject.tag == "Goal") {
-            Master.me.ResetPuck();
+            Master.me.GoalScored();
+            trail.Stop();
+        }
+    }
+
+    void PlayBounceSound() {
+        SoundController.me.PlaySoundAtNormalPitch(sfx_bounce, 1f, transform.position.x);
+    }
+
+    IEnumerator PlayBumperSound(int n) {
+        for (int i = 0; i < n; i++)
+        {
+            SoundController.me.PlaySoundAtPitch(sfx_bumperHit, .8f, Random.Range(0.8f, 1f) + (i*.1f));  
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

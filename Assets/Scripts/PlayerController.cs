@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     private Player rewiredPlayer;
 
     Rigidbody2D rb;
-    SpriteRenderer spr;
+    public SpriteRenderer spr;
     Collider2D coll;
 
     Vector2 lStickDir;
@@ -25,6 +25,15 @@ public class PlayerController : MonoBehaviour
 
     public bool hasPuck;
     PuckController puck;
+    bool shooting;
+    public float shootSpd;
+    public float maxShootSpd;
+
+    public int points;
+
+    public AudioClip sfx_shoot;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -48,9 +57,20 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (rewiredPlayer.GetButtonDown("Restart")) {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("main");
+        }
         lStickDir = new Vector2(rewiredPlayer.GetAxis("Move Horizontal"), rewiredPlayer.GetAxis("Move Vertical"));
-        if (rewiredPlayer.GetButtonDown("Swing")) {
-            Debug.Log("trying to shoot");
+
+        if (rewiredPlayer.GetButton("Swing") && hasPuck) {
+            shooting = true;
+            shootSpd += maxShootSpd/80f;
+            shootSpd = Mathf.Clamp(shootSpd, 0, maxShootSpd);
+        }
+
+
+        if (rewiredPlayer.GetButtonUp("Swing") && hasPuck && shooting) {
             if (hasPuck) {
                 ShootPuck();
             }
@@ -60,6 +80,14 @@ public class PlayerController : MonoBehaviour
             PuckController p = Master.me.puck;
             p.Control(transform.GetChild(0).transform.GetChild(0).transform.GetChild(0));
             ControlPuck(p);
+        }
+
+        if (rewiredPlayer.GetButtonDown("LeftFlap")) {
+            Master.me.leftFlap.StartFlap();
+        } 
+
+        if (rewiredPlayer.GetButtonDown("RightFlap")) {
+            Master.me.rightFlap.StartFlap();
         }
     }
 
@@ -77,6 +105,11 @@ public class PlayerController : MonoBehaviour
             transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(accel) - 90);
         }
 
+        if (shooting) {
+            accel *= .92f;
+            vel *= .92f;
+        }
+
         vel += accel;
         vel = Vector2.ClampMagnitude(vel, maxSpeed);
         //Debug.Log(vel);
@@ -87,10 +120,14 @@ public class PlayerController : MonoBehaviour
 
     void ShootPuck() {
         if (puck) {
+            SoundController.me.PlaySoundAtNormalPitch(sfx_shoot, 1f, transform.position.x);
+            shooting = false;
             Vector2 dir = Geo.ToVect(transform.localEulerAngles.z + 90f);
-            puck.Shoot(vel.magnitude, dir);
+            puck.Shoot(vel.magnitude + shootSpd, dir);
+            shootSpd = 0;
             hasPuck = false;
             puck = null;
+            Master.me.playerLastTouched = this;
         }
     }
 
@@ -106,13 +143,28 @@ public class PlayerController : MonoBehaviour
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.5f);
         }
 
+        if (coll.gameObject.tag == "Bumper") {
+            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * Random.Range(.9f, 1.3f));
+        }
+
         if (coll.gameObject.tag == "Puck") {
             PuckController p = coll.gameObject.GetComponent<PuckController>();
             Vector2 dir = (Vector2)p.transform.position - coll.contacts[0].point;
             p.vel = dir;
             p.spd = accel.magnitude * 100;
+            Master.me.playerLastTouched = this;
             //Debug.Log("DIR: " + p.vel);
             //Debug.Log("SPEED: " + p.spd);
+        }
+
+        if (coll.gameObject.tag == "Flap") {
+            FlapController f = coll.gameObject.GetComponent<FlapController>();
+            if (!f.flapping) {
+                vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.5f);
+            } else {
+                vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude);
+                //accel*=2;
+            }
         }
 
     }
