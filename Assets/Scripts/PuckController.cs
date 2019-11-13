@@ -14,7 +14,7 @@ public class PuckController : MonoBehaviour
     public float maxSpd;
     public float spd;
     public float damping;
-    bool controlled;
+    public bool controlled;
 
     Transform stick;
     public PlayerController playerControllingPuck;
@@ -44,6 +44,7 @@ public class PuckController : MonoBehaviour
         if (!controlled) {
             spd *= damping;
             rb.MovePosition((Vector2)transform.position + vel * spd);
+        
         } else {
             transform.position = stick.position;
         }
@@ -64,6 +65,12 @@ public class PuckController : MonoBehaviour
         trail.Stop();
     }
 
+    public void DropPuck(Vector2 dir) {
+        spd = vel.magnitude;
+        vel = dir;
+        controlled = false;
+    }
+
     void OnCollisionEnter2D(Collision2D coll) {
 
         if (coll.gameObject.tag == "Wall") {
@@ -80,7 +87,8 @@ public class PuckController : MonoBehaviour
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * Random.Range(.9f, 1.3f));
             int pts = Random.Range(2, 5);
             StartCoroutine(PlayBumperSound(pts));
-            Master.me.livePoints += pts;
+            Master.me.playerLastTouched.livePoints += pts;
+            Master.me.livePoints += pts*2;
             Master.me.UpdateUI();
             coll.gameObject.GetComponent<BumperController>().StartCoroutine("ColorBlast");
             Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
@@ -95,10 +103,19 @@ public class PuckController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll) {
 
-        if (coll.gameObject.tag == "Goal") {
-            Master.me.GoalScored();
+        if (coll.gameObject.tag == "Goal" && !controlled) {
+            GoalController g = coll.GetComponent<GoalController>();
+            Debug.Log("scored!");
+            Master.me.GoalScored(g.playerId);
             trail.Stop();
         }
+
+        if (coll.gameObject.tag == "Warp" && !controlled) {
+            WarpController w = coll.gameObject.GetComponent<WarpController>();
+            transform.position = w.otherWarp.transform.position + w.otherWarp.dir*1f;
+            //vel.y*=-1;
+        }
+
     }
 
     void PlayBounceSound() {

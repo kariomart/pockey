@@ -1,0 +1,64 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CameraController : MonoBehaviour
+{
+
+    Transform t1;
+    Transform t2;
+    Transform t3;
+    Camera cam;
+    public int baseSize;
+    public int maxSize;
+    // Start is called before the first frame update
+    void Start()
+    {
+
+        t1 = Master.me.players[0].transform;
+        t2 = Master.me.players[1].transform;
+        t3 = Master.me.puck.gameObject.transform;
+        cam = Camera.main;
+        
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+
+        // How many units should we keep from the players
+    float zoomFactor = 1.5f;
+    float followTimeDelta = 0.8f;
+    Vector3 midpoint;
+    midpoint = (t1.position + t2.position) / 2f;
+    midpoint = (t1.position + t2.position + t3.position) / 3f;
+
+    // if (!Master.me.puck.controlled) {
+    //     midpoint = (t1.position + t2.position + t3.position) / 3f;
+    // } else {
+    //     midpoint = (t1.position + t2.position) / 2f;
+    // }
+ 
+     // Distance between objects
+     float distance = (t1.position - t2.position).magnitude;
+ 
+     // Move camera a certain distance
+     Vector3 cameraDestination = midpoint - cam.transform.forward * distance * zoomFactor;
+ 
+     // Adjust ortho size if we're using one of those
+     if (cam.orthographic)
+     {
+         // The camera's forward vector is irrelevant, only this size will matter
+         float newSize = baseSize + distance;
+         newSize = Mathf.Clamp(newSize, baseSize, maxSize);
+         cam.orthographicSize = newSize;
+     }
+     // You specified to use MoveTowards instead of Slerp
+     cam.transform.position = Vector3.Slerp(cam.transform.position, cameraDestination, followTimeDelta);
+         
+     // Snap when close enough to prevent annoying slerp behavior
+     if ((cameraDestination - cam.transform.position).magnitude <= 0.05f)
+         cam.transform.position = cameraDestination;
+        
+    }
+}

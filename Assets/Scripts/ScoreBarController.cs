@@ -6,9 +6,10 @@ public class ScoreBarController : MonoBehaviour
 {
 
     float minScale = 0.01f;
-    float maxScale = 9f;
+    public float maxScale = 9f;
     public int playerId;
     PlayerController player;
+    
     // Start is called before the first frame update
     void Start()
     {

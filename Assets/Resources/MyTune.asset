@@ -16,5 +16,5 @@ MonoBehaviour:
   deaccel: 0.003
   speed: 0
   maxAccel: 0.005
-  maxSpeed: 0.15
-  damping: 0.93
+  maxSpeed: 0.2
+  damping: 0.95

@@ -10,6 +10,7 @@ TagManager:
   - Flap
   - Bumper
   - Slingshot
+  - Warp
   layers:
   - Default
   - TransparentFX
@@ -20,9 +21,9 @@ TagManager:
   - 
   - 
   - Wall
-  - 
-  - 
-  - 
+  - Barrier
+  - Player
+  - Warp
   - 
   - 
   - 

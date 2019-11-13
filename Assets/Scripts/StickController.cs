@@ -7,16 +7,28 @@ public class StickController : MonoBehaviour
 
     PlayerController player;
     Transform endOfStick;
+    SpriteRenderer sprite;
+    Color defColor;
     // Start is called before the first frame update
     void Start()
     {
         player = transform.parent.transform.GetComponentInParent<PlayerController>();
         endOfStick = transform.GetChild(0);
+        sprite = GetComponent<SpriteRenderer>();
+        defColor = sprite.color;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (player.shooting) {
+            Color tc = defColor;
+            Color c = new Color(tc.r, tc.g, tc.b, .2f+player.shootSpd/player.maxShootSpd);
+            sprite.color = c;
+        } else {
+            sprite.color = defColor;
+        }
         
     }
 

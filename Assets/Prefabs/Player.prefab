@@ -4795,9 +4795,9 @@ GameObject:
   - component: {fileID: 7840336748390805837}
   - component: {fileID: 7840336748390805827}
   - component: {fileID: 7840336748390805836}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4809,15 +4809,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7840336748390805826}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.25257516, y: 0.0814588, z: -0.012075363}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -1, w: 0.00003236532}
+  m_LocalPosition: {x: 1.2572734, y: 0.08149239, z: -0.012075363}
+  m_LocalScale: {x: 1.6761771, y: 1.6761771, z: 1.6761771}
   m_Children:
   - {fileID: 7840336748967434874}
   - {fileID: 4772344935330924241}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -179.996}
 --- !u!50 &7840336748390805827
 Rigidbody2D:
   serializedVersion: 4
@@ -4860,11 +4860,16 @@ MonoBehaviour:
   maxAccel: 0.005
   maxSpeed: 0.18
   damping: 0.95
+  dashSpeed: 5
   hasPuck: 0
+  shooting: 0
   shootSpd: 0
-  maxShootSpd: 0.35
+  maxShootSpd: 0.5
+  dashTimer: 30
+  livePoints: 0
   points: 0
   sfx_shoot: {fileID: 8300000, guid: d83245a5edfe54ba6905ea16e5bf9379, type: 3}
+  goal: {fileID: 0}
 --- !u!1 &7840336748650722996
 GameObject:
   m_ObjectHideFlags: 0
@@ -4997,9 +5002,9 @@ GameObject:
   - component: {fileID: 7840336748967434874}
   - component: {fileID: 7840336748967434820}
   - component: {fileID: 7840336748967434875}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sprite
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -22,16 +22,25 @@ public class PlayerController : MonoBehaviour
     public float maxAccel;
     public float maxSpeed;
     public float damping;
+    public float dashSpeed;
 
     public bool hasPuck;
     PuckController puck;
-    bool shooting;
+    public bool shooting;
+    bool justShot;
+    int framesSinceShot = 11;
+    int shotTimer = 10;
     public float shootSpd;
     public float maxShootSpd;
+    float framesSinceDash;
+    public float dashTimer;
 
+    public int livePoints;
     public int points;
 
     public AudioClip sfx_shoot;
+
+    public GoalieController goal;
 
 
 
@@ -59,15 +68,21 @@ public class PlayerController : MonoBehaviour
     {
 
         if (rewiredPlayer.GetButtonDown("Restart")) {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("main");
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
         }
         lStickDir = new Vector2(rewiredPlayer.GetAxis("Move Horizontal"), rewiredPlayer.GetAxis("Move Vertical"));
 
-        if (rewiredPlayer.GetButton("Swing") && hasPuck) {
-            shooting = true;
-            shootSpd += maxShootSpd/80f;
-            shootSpd = Mathf.Clamp(shootSpd, 0, maxShootSpd);
+        if (rewiredPlayer.GetButton("Swing")) {
+            if (hasPuck) {
+                shooting = true;
+                shootSpd += maxShootSpd/80f;
+                shootSpd = Mathf.Clamp(shootSpd, 0, maxShootSpd);
+            }
         }
+
+        if (rewiredPlayer.GetButtonDown("Swing") && !hasPuck) {
+            Dash();
+        }   
 
 
         if (rewiredPlayer.GetButtonUp("Swing") && hasPuck && shooting) {
@@ -93,8 +108,13 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate() {
 
-        //Vector2 desAng = lStickDir;
-        //transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.MoveTowards(transform.eulerAngles.z, Geo.ToAng(lStickDir), 10f));
+        if (justShot) {
+            framesSinceShot ++;
+        }
+        framesSinceDash ++;
+
+        MoveGoalie();
+
         accel += lStickDir.normalized * jerk;
         accel = Vector2.ClampMagnitude(accel, maxAccel);
         if (lStickDir == Vector2.zero) {
@@ -106,8 +126,8 @@ public class PlayerController : MonoBehaviour
         }
 
         if (shooting) {
-            accel *= .92f;
-            vel *= .92f;
+            accel *= .89f;
+            vel *= .89f;
         }
 
         vel += accel;
@@ -116,6 +136,18 @@ public class PlayerController : MonoBehaviour
 
 
         rb.MovePosition((Vector2)transform.position + vel);
+    }
+
+    void Dash() {
+        if (framesSinceDash > dashTimer) {
+            Vector2 dir = lStickDir.normalized;
+            float mag = vel.magnitude;
+            //Debug.Log(mag);
+            dir *= dashSpeed;
+            vel *= .5f;
+            vel += dir*(mag*10);
+            framesSinceDash = 0;
+        }
     }
 
     void ShootPuck() {
@@ -127,20 +159,52 @@ public class PlayerController : MonoBehaviour
             shootSpd = 0;
             hasPuck = false;
             puck = null;
+            justShot = true;
+            framesSinceShot = 0;
             Master.me.playerLastTouched = this;
         }
     }
 
     public void ControlPuck(PuckController p) {
-        p.playerControllingPuck = this;
-        hasPuck = true;
-        puck = p;
+        if (framesSinceShot > shotTimer) {
+            p.playerControllingPuck = this;
+            hasPuck = true;
+            puck = p;
+            justShot = false;
+        }
+    }
+
+    void MoveGoalie() {
+        float y = lStickDir.y;
+        float goalSpd = .1f;
+
+        float desPos = goal.transform.position.y + goalSpd*y;
+        if (desPos > Master.me.goalPos[playerId].y + .5f*Master.me.goalSize) {
+            desPos = Master.me.goalPos[playerId].y + .5f*Master.me.goalSize;       
+        } else if (desPos < Master.me.goalPos[playerId].y - .5f*Master.me.goalSize) {
+            desPos = Master.me.goalPos[playerId].y - .5f*Master.me.goalSize;       
+        }
+        goal.transform.position = new Vector2(goal.transform.position.x, desPos);
     }
 
     void OnCollisionEnter2D(Collision2D coll) {
 
         if (coll.gameObject.tag == "Wall") {
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.5f);
+        }
+
+        if (coll.gameObject.tag == "Player") {
+            PlayerController p = coll.gameObject.GetComponent<PlayerController>();
+            if (puck && p.vel.magnitude > 0.1f) {
+                hasPuck = false;
+                puck.DropPuck(p.vel);
+                puck = null;
+            }
+
+            //vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (p.vel.magnitude*5);
+            Vector2 collDir = transform.position - coll.transform.position;
+            vel = collDir * p.vel.magnitude;
+
         }
 
         if (coll.gameObject.tag == "Bumper") {
