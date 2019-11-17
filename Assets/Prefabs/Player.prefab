@@ -4794,7 +4794,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7840336748390805837}
   - component: {fileID: 7840336748390805827}
-  - component: {fileID: 7840336748390805836}
+  - component: {fileID: 8748826283568001627}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -4839,7 +4839,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &7840336748390805836
+--- !u!114 &8748826283568001627
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4848,27 +4848,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 7840336748390805826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a08911108b98f4cedb3de5e9ef8b77da, type: 3}
+  m_Script: {fileID: 11500000, guid: 525b107f924844ad2bb47430123a7d47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 0
   spr: {fileID: 0}
   accel: {x: 0, y: 0}
-  jerk: 0.0005
-  deaccel: 0.003
+  jerk: 0
+  deaccel: 0
   speed: 0
-  maxAccel: 0.005
-  maxSpeed: 0.18
-  damping: 0.95
-  dashSpeed: 5
+  maxAccel: 0
+  maxSpeed: 0
+  damping: 0
+  dashSpeed: 0
   hasPuck: 0
   shooting: 0
   shootSpd: 0
-  maxShootSpd: 0.5
-  dashTimer: 30
+  maxShootSpd: 0
+  dashTimer: 0
   livePoints: 0
   points: 0
-  sfx_shoot: {fileID: 8300000, guid: d83245a5edfe54ba6905ea16e5bf9379, type: 3}
+  sfx_shoot: {fileID: 0}
   goal: {fileID: 0}
 --- !u!1 &7840336748650722996
 GameObject:
