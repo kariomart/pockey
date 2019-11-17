@@ -14,12 +14,11 @@ public class PlayerController : MonoBehaviour
     Collider2D coll;
 
     Vector2 lStickDir;
+    Vector2 lastStickDir;
     Vector2 vel;
-    public Vector2 accel;
-    public float jerk;
+    public float accel;
     public float deaccel;
     public float speed;
-    public float maxAccel;
     public float maxSpeed;
     public float damping;
     public float dashSpeed;
@@ -27,9 +26,8 @@ public class PlayerController : MonoBehaviour
     public bool hasPuck;
     PuckController puck;
     public bool shooting;
-    bool justShot;
     int framesSinceShot = 11;
-    int shotTimer = 10;
+    int shotTimer = 15;
     public float shootSpd;
     public float maxShootSpd;
     float framesSinceDash;
@@ -53,13 +51,13 @@ public class PlayerController : MonoBehaviour
         SetColor(Master.me.playerColors[playerId]);
         coll = transform.GetChild(0).GetComponent<CircleCollider2D>();
 
-        PlayerTuning tuning = Resources.Load<PlayerTuning>("MyTune");
-        jerk = tuning.jerk;
-        deaccel = tuning.deaccel;
-        speed = tuning.speed;
-        maxAccel = tuning.maxAccel;
-        maxSpeed = tuning.maxSpeed;
-        damping = tuning.damping;
+        // PlayerTuning tuning = Resources.Load<PlayerTuning>("MyTune");
+        // jerk = tuning.jerk;
+        // deaccel = tuning.deaccel;
+        // speed = tuning.speed;
+        // maxAccel = tuning.maxAccel;
+        // maxSpeed = tuning.maxSpeed;
+        // damping = tuning.damping;
         
     }
 
@@ -92,9 +90,10 @@ public class PlayerController : MonoBehaviour
         }
 
         if (rewiredPlayer.GetButtonDown("Call Puck")) {
-            PuckController p = Master.me.puck;
-            p.Control(transform.GetChild(0).transform.GetChild(0).transform.GetChild(0));
-            ControlPuck(p);
+            // PuckController p = Master.me.puck;
+            // p.Control(transform.GetChild(0).transform.GetChild(0).transform.GetChild(0));
+            // p.playerControllingPuck.DropPuck();
+            // ControlPuck(p);
         }
 
         if (rewiredPlayer.GetButtonDown("LeftFlap")) {
@@ -108,31 +107,31 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate() {
 
-        if (justShot) {
-            framesSinceShot ++;
-        }
-        framesSinceDash ++;
 
-        MoveGoalie();
+        framesSinceShot ++;
 
-        accel += lStickDir.normalized * jerk;
-        accel = Vector2.ClampMagnitude(accel, maxAccel);
-        if (lStickDir == Vector2.zero) {
-            accel *= damping;
-            vel *= damping;
+
+        Vector2 moveDir = lStickDir.normalized; 
+        if (moveDir != Vector2.zero) {
+            speed+=accel;
+            lastStickDir = moveDir;
+            //transform.localEulerAngles = transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(lStickDir) - 90);
+            transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(vel) - 90);
         } else {
-            //transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(lStickDir) - 90);
-            transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(accel) - 90);
+            speed -= deaccel;
+            speed = Mathf.Clamp(speed, 0, maxSpeed);
         }
 
-        if (shooting) {
-            accel *= .89f;
-            vel *= .89f;
+        if (speed>=maxSpeed) {
+            speed = maxSpeed;
         }
 
-        vel += accel;
-        vel = Vector2.ClampMagnitude(vel, maxSpeed);
-        //Debug.Log(vel);
+        vel += moveDir*speed;  
+        if (!shooting) {   
+            vel *= damping;   
+        } else {
+            vel *= .85f;
+        }
 
 
         rb.MovePosition((Vector2)transform.position + vel);
@@ -154,14 +153,18 @@ public class PlayerController : MonoBehaviour
         if (puck) {
             SoundController.me.PlaySoundAtNormalPitch(sfx_shoot, 1f, transform.position.x);
             shooting = false;
-            Vector2 dir = Geo.ToVect(transform.localEulerAngles.z + 90f);
+            Vector2 dir;
+            if (lStickDir == Vector2.zero) {
+                dir = Geo.ToVect(transform.localEulerAngles.z + 90f);
+            } else {
+                dir = lastStickDir;
+            }
             puck.Shoot(vel.magnitude + shootSpd, dir);
             shootSpd = 0;
             hasPuck = false;
-            puck = null;
-            justShot = true;
             framesSinceShot = 0;
-            Master.me.playerLastTouched = this;
+            puck.lastPlayerTouched = this;
+            puck = null;
         }
     }
 
@@ -170,8 +173,18 @@ public class PlayerController : MonoBehaviour
             p.playerControllingPuck = this;
             hasPuck = true;
             puck = p;
-            justShot = false;
         }
+    }
+
+    public void DropPuck() {
+        hasPuck = false;
+        puck.controlled = false;
+        puck.lastPlayerTouched = this;
+        puck = null;
+    }
+
+    public bool CanShoot() {
+        return framesSinceShot > shotTimer;
     }
 
     void MoveGoalie() {
@@ -195,10 +208,9 @@ public class PlayerController : MonoBehaviour
 
         if (coll.gameObject.tag == "Player") {
             PlayerController p = coll.gameObject.GetComponent<PlayerController>();
-            if (puck && p.vel.magnitude > 0.1f) {
-                hasPuck = false;
+            if (puck && p.vel.magnitude > 0.2f) {
                 puck.DropPuck(p.vel);
-                puck = null;
+                DropPuck();
             }
 
             //vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (p.vel.magnitude*5);
@@ -215,8 +227,7 @@ public class PlayerController : MonoBehaviour
             PuckController p = coll.gameObject.GetComponent<PuckController>();
             Vector2 dir = (Vector2)p.transform.position - coll.contacts[0].point;
             p.vel = dir;
-            p.spd = accel.magnitude * 100;
-            Master.me.playerLastTouched = this;
+            p.lastPlayerTouched = this;
             //Debug.Log("DIR: " + p.vel);
             //Debug.Log("SPEED: " + p.spd);
         }

@@ -18,6 +18,7 @@ public class PuckController : MonoBehaviour
 
     Transform stick;
     public PlayerController playerControllingPuck;
+    public PlayerController lastPlayerTouched;
 
     public AudioClip sfx_bounce;
     public AudioClip sfx_bumperHit;
@@ -69,6 +70,7 @@ public class PuckController : MonoBehaviour
         spd = vel.magnitude;
         vel = dir;
         controlled = false;
+        playerControllingPuck = null;
     }
 
     void OnCollisionEnter2D(Collision2D coll) {
@@ -85,10 +87,10 @@ public class PuckController : MonoBehaviour
 
         if (coll.gameObject.tag == "Bumper" && !controlled) {
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * Random.Range(.9f, 1.3f));
+            Master.me.shake.SetScreenshake(.35f, .25f);
             int pts = Random.Range(2, 5);
             StartCoroutine(PlayBumperSound(pts));
-            Master.me.playerLastTouched.livePoints += pts;
-            Master.me.livePoints += pts*2;
+            Master.me.livePoints += pts;
             Master.me.UpdateUI();
             coll.gameObject.GetComponent<BumperController>().StartCoroutine("ColorBlast");
             Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
@@ -106,7 +108,7 @@ public class PuckController : MonoBehaviour
         if (coll.gameObject.tag == "Goal" && !controlled) {
             GoalController g = coll.GetComponent<GoalController>();
             Debug.Log("scored!");
-            Master.me.GoalScored(g.playerId);
+            Master.me.GoalScored(this);
             trail.Stop();
         }
 

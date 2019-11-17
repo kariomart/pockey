@@ -23,7 +23,6 @@ public class Master : MonoBehaviour
     public PuckController puck;
     public Transform puckSpawn;
 
-    public PlayerController playerLastTouched;
     public int livePoints;
     public int pointsToWin;
     public TextMeshPro livePointsUI;
@@ -34,6 +33,7 @@ public class Master : MonoBehaviour
     public Image middleCircle;
 
     public GameObject collisionParticle;
+    public Screenshake shake;
 
     public AudioClip sfx_goal;
     public GameObject coinFX;
@@ -45,6 +45,7 @@ public class Master : MonoBehaviour
         players = new PlayerController[numPlayers];
         SpawnPlayers();
         puck = Instantiate(puckObj, Vector2.zero, Quaternion.identity).GetComponent<PuckController>();
+        shake = Camera.main.GetComponent<Screenshake>();
         ResetPuck();
         UpdateUI();
     }
@@ -65,19 +66,11 @@ public class Master : MonoBehaviour
     }
 
 
-    public void GoalScored(int playerId) {
+    public void GoalScored(PuckController p) {
+        PlayerController player = p.lastPlayerTouched;
+        int playerId = player.playerId;
+        player.points += livePoints;
 
-        if (playerId == -1) {
-            playerLastTouched.points += livePoints;
-            livePoints = 0;
-        } else {
-            PlayerController p = players[playerId];
-            if (playerLastTouched.playerId != playerId) {
-                playerLastTouched.points += 5 + playerLastTouched.livePoints;
-            }
-            p.livePoints = 0;
-            playerLastTouched.livePoints = 0;
-        }
 
         SoundController.me.PlaySound(sfx_goal, 1f);
         UpdateUI();
@@ -123,15 +116,6 @@ public class Master : MonoBehaviour
             livePointsUI.enabled = true;
         }
         livePointsUI.text = "" + livePoints;
-        team1PointsUI.text = "" + players[0].points;
-        team2PointsUI.text = "" + players[1].points;
-        team1LivePointsUI.text = "" + players[0].livePoints;
-        team2LivePointsUI.text = "" + players[1].livePoints;
-        // PlayerController p = GetWinningPlayer();
-        // if (p) {
-        //     middleCircle.color = p.spr.color;
-        // }
-        
     }
 
     PlayerController GetWinningPlayer() {

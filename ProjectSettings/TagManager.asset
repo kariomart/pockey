@@ -11,6 +11,7 @@ TagManager:
   - Bumper
   - Slingshot
   - Warp
+  - PuckSpawn
   layers:
   - Default
   - TransparentFX

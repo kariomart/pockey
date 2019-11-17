@@ -59,10 +59,7 @@ public class DimeController : MonoBehaviour
             Master.me.livePoints += value*2;
             Master.me.UpdateUI();
             TurnOn();
-        } else if (Master.me.playerLastTouched && !on && coll.gameObject.tag == "Puck") {
-            Master.me.playerLastTouched.livePoints += value;
-            TurnOn();
-        }
+        } 
     }
 
     
