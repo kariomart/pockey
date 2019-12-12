@@ -12,6 +12,7 @@ TagManager:
   - Slingshot
   - Warp
   - PuckSpawn
+  - ZoomGate
   layers:
   - Default
   - TransparentFX

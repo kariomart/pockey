@@ -9,6 +9,12 @@ public class SoundController : MonoBehaviour {
 	public AudioSource[] audSources;
 	public float panAmount = 1f;
 
+	[Header("SFX")]
+	public List<AudioClip> sfx_wallHits;
+	public List<AudioClip> sfx_shots;
+	public List<AudioClip> sfx_pinball;
+
+
 	void Update() {
 
 		//FixSoundSpeeds ();
@@ -43,6 +49,11 @@ public class SoundController : MonoBehaviour {
 		return me;
 	}
 
+	public void PlayRandomSound(List<AudioClip> sfxList) {
+		AudioClip a = sfxList[Random.Range(0, sfxList.Count)];
+		PlaySound(a, 1f);
+	}
+
 
 	public void PlaySound(AudioClip snd, float vol)
 
@@ -59,7 +70,6 @@ public class SoundController : MonoBehaviour {
 	public void PlaySound(AudioClip snd, float vol, float pitch)
 
 	{
-		//Debug.Log (snd);
 		int sNum = GetSourceNum ();
 		audSources [sNum].clip = snd;
 		audSources [sNum].volume = vol;

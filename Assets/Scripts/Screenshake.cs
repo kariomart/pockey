@@ -11,11 +11,13 @@ public class Screenshake : MonoBehaviour {
 	bool shaking;
 
     Camera cam;
+	CameraController camControl;
 
 	// Use this for initialization
 	void Start () {
 		defaultCameraPos = transform.position;
         cam = Camera.main;
+		camControl = GetComponent<CameraController>();
 	}
 			
 	// Update is called once per frame
@@ -26,14 +28,15 @@ public class Screenshake : MonoBehaviour {
 			Vector3 shakeDirection = ((Vector3)Random.insideUnitCircle + weightedDirection).normalized * thisMagnitude * Mathf.Clamp01(screenshakeTimer);
             float zoomFactor = cam.orthographicSize / 15f;
             shakeDirection *= zoomFactor;
+			camControl.shakeChange = shakeDirection;
 			Vector3 result = defaultCameraPos + shakeDirection;
 			result.z = -10;
-			transform.position = result;
+			//transform.position = result;
 			screenshakeTimer -= Time.deltaTime;
 		} 
 
 		else {
-
+			camControl.shakeChange = Vector3.zero;
 			if (shaking) {
 				shaking = false;
 			}

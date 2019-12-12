@@ -13,6 +13,8 @@ public class Master : MonoBehaviour
     public GameObject puckObj;
     public FlapController leftFlap;
     public FlapController rightFlap;
+    public bool goaliesEnabled;
+    public bool collided;
 
     public int numPlayers;
     public PlayerController[] players;
@@ -28,9 +30,8 @@ public class Master : MonoBehaviour
     public TextMeshPro livePointsUI;
     public TextMeshPro team1PointsUI;
     public TextMeshPro team2PointsUI;
-    public TextMeshPro team1LivePointsUI;
-    public TextMeshPro team2LivePointsUI;
     public Image middleCircle;
+    public SpriteRenderer bg;
 
     public GameObject collisionParticle;
     public Screenshake shake;
@@ -38,15 +39,16 @@ public class Master : MonoBehaviour
     public AudioClip sfx_goal;
     public GameObject coinFX;
 
+
     // Start is called before the first frame update
     void Start()
     {
         Initialize();
         players = new PlayerController[numPlayers];
         SpawnPlayers();
-        puck = Instantiate(puckObj, Vector2.zero, Quaternion.identity).GetComponent<PuckController>();
+        SpawnPuck();
+        livePoints = 5;
         shake = Camera.main.GetComponent<Screenshake>();
-        ResetPuck();
         UpdateUI();
     }
 
@@ -66,15 +68,23 @@ public class Master : MonoBehaviour
     }
 
 
-    public void GoalScored(PuckController p) {
+    public void GoalScored(PuckController p, GoalController g) {
         PlayerController player = p.lastPlayerTouched;
-        int playerId = player.playerId;
-        player.points += livePoints;
 
+        if (g.playerId == 3)
+        {
+            player.points += livePoints;
+        } else if (player.playerId != g.playerId) {
+            player.points += livePoints;
+        } else {
 
+        }
+
+        livePoints = 5;
+        StartCoroutine(FlashBackground(playerColors[player.playerId]));
         SoundController.me.PlaySound(sfx_goal, 1f);
         UpdateUI();
-        ResetPuck();
+        SpawnPuck();
     }
 
     public void AddPoints(int points) {
@@ -98,12 +108,25 @@ public class Master : MonoBehaviour
         }
     }
 
-    public void ResetPuck() {
+    IEnumerator FlashBackground(Color color) {
+        Color defColor = bg.color;
+        bg.color = color;
+        float time = 100f;
 
-        puck.transform.position = puckSpawn.position;
-        puck.spd = 0;
-
+        for (int i=0;i<=time;i++) {
+            Color desColor = Color.Lerp(color, defColor, i/time);
+            bg.color = desColor;
+            yield return new WaitForSeconds(0.01f);
+        }
     }
+
+    public IEnumerator HitPos(float t = 0.01f) {
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(t);
+        Time.timeScale = 1;
+    }
+
+
 
     public void SpawnParticle(GameObject p, Vector2 pos) {
         Instantiate(p, pos, Quaternion.identity);
@@ -116,6 +139,8 @@ public class Master : MonoBehaviour
             livePointsUI.enabled = true;
         }
         livePointsUI.text = "" + livePoints;
+        team1PointsUI.text = "" + players[0].points;
+        team2PointsUI.text = "" + players[1].points;
     }
 
     PlayerController GetWinningPlayer() {
@@ -133,6 +158,14 @@ public class Master : MonoBehaviour
         return ply;
     }
 
+    void SpawnPuck() {
+
+        puck = Instantiate(puckObj, new Vector2(0, 10), Quaternion.identity).GetComponent<PuckController>();
+        StartCoroutine(PuckInvuln());
+        Camera.main.GetComponent<CameraController>().t3 = puck.transform;
+
+    }
+
     void SpawnPlayers() {
 
         for (int i = 0; i < players.Length; i++)
@@ -142,12 +175,34 @@ public class Master : MonoBehaviour
             playerController.playerId = i;
             players[i] = playerController;
 
-            GoalieController g = Instantiate(goalieObj, goalPos[i], Quaternion.identity).GetComponent<GoalieController>();
-            g.gameObject.GetComponent<SpriteRenderer>().color = playerColors[i];
-            g.transform.eulerAngles = new Vector3(0, 0, -90f);
-            playerController.goal = g;
+            if (goaliesEnabled)
+            {
+                GoalieController g = Instantiate(goalieObj, goalPos[i], Quaternion.identity).GetComponent<GoalieController>();
+                g.gameObject.GetComponent<SpriteRenderer>().color = playerColors[i];
+                g.transform.eulerAngles = new Vector3(0, 0, -90f);
+                playerController.goal = g;
+            }
 
         }
+
+    }
+
+    IEnumerator PuckInvuln() {
+
+        float maxScale = 5;
+        float defScale = puck.transform.localScale.x;
+        Collider2D coll = puck.GetComponent<Collider2D>();
+        coll.enabled = false;
+        puck.transform.localScale = new Vector3(maxScale, maxScale, maxScale);
+        float len = 100f;
+        for (int i = 0; i < len; i++)
+        {
+            float desScale = Mathf.Lerp(puck.transform.localScale.x, defScale, i/len);
+            puck.transform.localScale = new Vector3(desScale, desScale, desScale);
+            yield return new WaitForSeconds(.01f);        
+        }
+
+        coll.enabled = true;
 
     }
 

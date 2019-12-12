@@ -4797,7 +4797,7 @@ GameObject:
   - component: {fileID: 7840336748390805827}
   - component: {fileID: 8748826283568001627}
   m_Layer: 10
-  m_Name: Player
+  m_Name: PlayerBigger
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4811,8 +4811,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7840336748390805826}
   m_LocalRotation: {x: 0, y: 0, z: -1, w: 0.000034922778}
-  m_LocalPosition: {x: 1.359, y: -0.14305, z: 0.17563}
-  m_LocalScale: {x: 2.3649962, y: 2.3649962, z: 2.3649962}
+  m_LocalPosition: {x: 1.6355, y: -0.56152, z: 0.52545}
+  m_LocalScale: {x: 3.648716, y: 3.648716, z: 3.648716}
   m_Children:
   - {fileID: 7840336748967434874}
   - {fileID: 4772344935330924241}
@@ -4856,16 +4856,16 @@ MonoBehaviour:
   playerId: 0
   spr: {fileID: 0}
   lStickDir: {x: 0, y: 0}
-  accel: 0.0005
+  accel: 0.0007
   deaccel: 0.0006
   speed: 0
-  maxSpeed: 0.03
+  maxSpeed: 0.05
   damping: 0.94
   dashSpeed: 0
   hasPuck: 0
   shooting: 0
   shootSpd: 0
-  maxShootSpd: 5
+  maxShootSpd: 3
   dashTimer: 60
   livePoints: 0
   points: 0

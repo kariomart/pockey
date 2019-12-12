@@ -26,6 +26,7 @@ public class DimeController : MonoBehaviour
         spr = GetComponent<SpriteRenderer>();
         defColor = spr.color;
         valueText = GetComponentInChildren<TextMeshPro>();
+        valueText.text = "" + value;
     }
 
     // Update is called once per frame
@@ -55,8 +56,7 @@ public class DimeController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll) {
         if (!on && coll.gameObject.tag == "Player") {
-            coll.GetComponentInParent<PlayerController>().livePoints += value;
-            Master.me.livePoints += value*2;
+            coll.GetComponentInParent<PlayerController>().points++;
             Master.me.UpdateUI();
             TurnOn();
         } 

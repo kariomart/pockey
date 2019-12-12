@@ -7,10 +7,11 @@ public class CameraController : MonoBehaviour
 
     Transform t1;
     Transform t2;
-    Transform t3;
+    public Transform t3;
     Camera cam;
     public int baseSize;
     public int maxSize;
+    public Vector3 shakeChange;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,8 +31,8 @@ public class CameraController : MonoBehaviour
     float zoomFactor = 1.5f;
     float followTimeDelta = 0.8f;
     Vector3 midpoint;
-    midpoint = (t1.position + t2.position) / 2f;
-    //midpoint = (t1.position + t2.position + t3.position) / 3f;
+    //midpoint = (t1.position + t2.position) / 2f;
+    midpoint = (t1.position + t2.position + t3.position) / 3f;
 
     // if (!Master.me.puck.controlled) {
     //     midpoint = (t1.position + t2.position + t3.position) / 3f;
@@ -44,6 +45,7 @@ public class CameraController : MonoBehaviour
  
      // Move camera a certain distance
      Vector3 cameraDestination = midpoint - cam.transform.forward * distance * zoomFactor;
+     cameraDestination += shakeChange;
  
      // Adjust ortho size if we're using one of those
      if (cam.orthographic)

@@ -7,18 +7,22 @@ public class PuckController : MonoBehaviour
 
     SpriteRenderer spr;
     Rigidbody2D rb;
-    Collider2D coll;
+    public Collider2D coll;
     ParticleSystem trail;
 
     public Vector2 vel;
-    public float maxSpd;
     public float spd;
+    public float baseSpd;
+    public float maxSpd;
     public float damping;
     public bool controlled;
+
+    int aftertouchFrames;
 
     Transform stick;
     public PlayerController playerControllingPuck;
     public PlayerController lastPlayerTouched;
+    public PlayerController playerLastShot;
 
     public AudioClip sfx_bounce;
     public AudioClip sfx_bumperHit;
@@ -42,21 +46,39 @@ public class PuckController : MonoBehaviour
 
     void FixedUpdate() {
 
-        if (!controlled) {
+        aftertouchFrames++;
+
+        if (aftertouchFrames < 8 && playerLastShot) {
+            //vel += playerLastShot.lStickDir*.5f;
+        }
+        //vel.Normalize();
+
+       
+    }
+
+    void LateUpdate() {
+
+         if (!controlled) {
             spd *= damping;
+            if (spd > maxSpd)
+            {
+                spd = maxSpd;
+            }
             rb.MovePosition((Vector2)transform.position + vel * spd);
+            rb.velocity = Vector2.zero;
         
         } else {
             transform.position = stick.position;
         }
-
     }
 
     public void Shoot(float inheritedVel, Vector2 dir) {
+        aftertouchFrames = 0;
         controlled = false;
         playerControllingPuck = null;
         vel = dir;
-        spd = inheritedVel + maxSpd;
+        spd = baseSpd + inheritedVel;
+        Debug.Log(spd);
         trail.Play();
     }
 
@@ -76,9 +98,15 @@ public class PuckController : MonoBehaviour
     void OnCollisionEnter2D(Collision2D coll) {
 
         if (coll.gameObject.tag == "Wall") {
-            PlayBounceSound();
+            if (!controlled) {
+                PlayBounceSound();
+            }
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.8f);
             Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
+        }
+
+        if (coll.gameObject.tag == "Player") {
+            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.8f);
         }
 
         if (coll.gameObject.tag == "Flap") {
@@ -86,13 +114,22 @@ public class PuckController : MonoBehaviour
         }
 
         if (coll.gameObject.tag == "Bumper" && !controlled) {
-            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * Random.Range(.9f, 1.3f));
-            Master.me.shake.SetScreenshake(.35f, .25f);
+            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal);
+            spd *= Random.Range(1f, 2f);
+            Master.me.shake.SetScreenshake(.5f, .4f);
             int pts = Random.Range(2, 5);
             StartCoroutine(PlayBumperSound(pts));
             Master.me.livePoints += pts;
             Master.me.UpdateUI();
-            coll.gameObject.GetComponent<BumperController>().StartCoroutine("ColorBlast");
+            BumperController b = coll.gameObject.GetComponent<BumperController>();
+            if (b)
+            {
+                b.StartCoroutine("ColorBlast");
+                if (b.flapBumper)
+                {
+                    b.desAngle += Random.Range(20, 100);
+                }
+            }
             Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
         }
 
@@ -108,7 +145,8 @@ public class PuckController : MonoBehaviour
         if (coll.gameObject.tag == "Goal" && !controlled) {
             GoalController g = coll.GetComponent<GoalController>();
             Debug.Log("scored!");
-            Master.me.GoalScored(this);
+            Master.me.GoalScored(this, g);
+            Destroy(this.gameObject);
             trail.Stop();
         }
 
@@ -118,10 +156,16 @@ public class PuckController : MonoBehaviour
             //vel.y*=-1;
         }
 
+        if (coll.gameObject.tag == "ZoomGate") {
+            //spd*=Random.Range(1.5f, 2.5f);
+            spd*=2;
+        }
+
     }
 
     void PlayBounceSound() {
-        SoundController.me.PlaySoundAtNormalPitch(sfx_bounce, 1f, transform.position.x);
+        //SoundController.me.PlaySoundAtNormalPitch(sfx_bounce, 1f, transform.position.x);
+        SoundController.me.PlayRandomSound(SoundController.me.sfx_wallHits);
     }
 
     IEnumerator PlayBumperSound(int n) {
