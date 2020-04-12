@@ -4705,6 +4705,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4859,10 +4860,12 @@ MonoBehaviour:
   accel: 0.0005
   deaccel: 0.0006
   speed: 0
-  maxSpeed: 0.03
+  maxSpeed: 0.04
   damping: 0.94
   dashSpeed: 0
   hasPuck: 0
+  flicking: 0
+  flickSpd: 5
   shooting: 0
   shootSpd: 0
   maxShootSpd: 5
@@ -4874,6 +4877,8 @@ MonoBehaviour:
   vfx_ice: {fileID: 1772492802083706, guid: d869a559781204fd8bdeb534d31e5103, type: 3}
   goal: {fileID: 0}
   reticle: {fileID: 9182481673469658504}
+  leftFlap: {fileID: 0}
+  rightFlap: {fileID: 0}
 --- !u!1 &7840336748650722996
 GameObject:
   m_ObjectHideFlags: 0
@@ -4922,6 +4927,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5043,6 +5049,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5235,6 +5242,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9975,6 +9983,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10068,6 +10077,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

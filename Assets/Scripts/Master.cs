@@ -11,26 +11,28 @@ public class Master : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject goalieObj;
     public GameObject puckObj;
-    public FlapController leftFlap;
-    public FlapController rightFlap;
     public bool goaliesEnabled;
     public bool collided;
 
     public int numPlayers;
     public PlayerController[] players;
+    public GoalController[] goals;
     public Color[] playerColors = new Color[4];
     public Vector2[] spawnPos = new Vector2[2];
     public Vector2[] goalPos = new Vector2[2];
     public float goalSize;
+    public int goalsScored;
+    public int[] multiplier = new int[2];
+    public GameObject spawnedBumpers;
     public PuckController puck;
     public Transform puckSpawn;
 
     public int livePoints;
     public int pointsToWin;
-    public TextMeshPro livePointsUI;
-    public TextMeshPro team1PointsUI;
-    public TextMeshPro team2PointsUI;
-    public Image middleCircle;
+    public TextMeshProUGUI livePointsUI;
+    public TextMeshProUGUI team1PointsUI;
+    public TextMeshProUGUI team2PointsUI;
+    public TextMeshProUGUI timerUI;
     public SpriteRenderer bg;
 
     public GameObject collisionParticle;
@@ -39,18 +41,33 @@ public class Master : MonoBehaviour
     public AudioClip sfx_goal;
     public GameObject coinFX;
 
+    Color defColor;
+
+    public BouncerController[] bouncers; 
+
+    public float gameTime;
+    public float periodLength;
 
     // Start is called before the first frame update
     void Start()
     {
         Initialize();
         players = new PlayerController[numPlayers];
+        GameObject[] goalObjs = GameObject.FindGameObjectsWithTag("Goal");
+        goals = new GoalController[goalObjs.Length];
+        for (int i = 0; i < goalObjs.Length; i++)
+        {
+            goals[i] = goalObjs[i].GetComponent<GoalController>();
+        }
         SpawnPlayers();
         SpawnPuck();
         livePoints = 5;
         shake = Camera.main.GetComponent<Screenshake>();
         UpdateUI();
+        defColor = bg.color;
+        gameTime = periodLength;
     }
+  
 
     // Update is called once per frame
     void Update()
@@ -59,32 +76,68 @@ public class Master : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) {
             //UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
         }
+
+        gameTime -= Time.deltaTime;
+        string minutes = Mathf.Floor(gameTime / 60).ToString("0");
+        string seconds = (gameTime % 60).ToString("00");
+        timerUI.text = minutes + ":" + seconds;
+        // if (gameTime > 60) {
+        //     timerUI.text = "" + (int)(gameTime/60f) + ":" + (int)(gameTime % 60);
+        // } else if ((gameTime % 60) > 10) {
+        //     timerUI.text = "0:" + (int)gameTime;
+        // } else {
+        //     timerUI.text = "0:0" + (int)gameTime;
+        // }
+
+        if (gameTime <= 0) {
+            SoundController.me.PlaySound(sfx_goal, 1f);
+            Time.timeScale = 0;
+        }
         
     }
 
     void FixedUpdate() {
+
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
 
 
     }
 
 
     public void GoalScored(PuckController p, GoalController g) {
-        PlayerController player = p.lastPlayerTouched;
 
-        if (g.playerId == 3)
-        {
-            player.points += livePoints;
-        } else if (player.playerId != g.playerId) {
-            player.points += livePoints;
-        } else {
-
+        GameObject[] bumpers;
+        bumpers = GameObject.FindGameObjectsWithTag("Bumper");
+        foreach(GameObject b in bumpers) {
+            BumperController bump = b.GetComponent<BumperController>();
+            if (bump) {
+                bump.Reset();
+            }
         }
 
-        livePoints = 5;
-        StartCoroutine(FlashBackground(playerColors[player.playerId]));
-        SoundController.me.PlaySound(sfx_goal, 1f);
+        if (goalsScored == 0) {
+            spawnedBumpers.SetActive(true);
+        }
+
+        Debug.Log("goal scored");
+        ResetBouncers();
+        goalsScored++;
+        if (g.playerId == 3) {
+            p.lastPlayerTouched.points += livePoints;
+        } else if (p.lastPlayerTouched.playerId == g.playerId) {
+            players[g.playerId].points += livePoints*multiplier[g.playerId];
+        } else {
+            players[1].points += livePoints/2;
+            players[0].points += livePoints/2;
+        }
+        StartCoroutine(FlashBackground(playerColors[g.playerId]));
+
+        livePoints = 0;
+        SoundController.me.PlaySound(sfx_goal, .5f);
         UpdateUI();
-        SpawnPuck();
+        SpawnPuck(g, 1-p.lastPlayerTouched.playerId);
     }
 
     public void AddPoints(int points) {
@@ -98,6 +151,46 @@ public class Master : MonoBehaviour
         //StartCoroutine(ShootCoinFX(points, pos));
     }
 
+    public void ChangeGoal(int id) {
+        goals[0].playerId = id;
+        goals[0].ChangeColor(playerColors[id]);
+    }
+
+
+    public void CheckBouncers() {
+        int t1Controlled = 0;
+        int t2Controlled = 0;
+
+        foreach (BouncerController b in bouncers) {
+            if (b.controlledID == 0) {
+                t1Controlled++;
+            }
+
+            else if (b.controlledID == 1) {
+                t2Controlled++;
+            }
+
+            if (t1Controlled > 2) {
+                // goals[1].DisableBlocker();
+                // goals[0].EnableBlocker();
+            }else if (t2Controlled > 2) {
+                // goals[0].DisableBlocker();
+                // goals[1].EnableBlocker();
+            }
+        }
+
+        multiplier[0] = t1Controlled;
+        multiplier[1] = t2Controlled;
+    }
+
+    public void ResetBouncers() {
+        foreach (BouncerController b in bouncers) {
+            b.Reset();
+        }
+    }
+
+   
+
     IEnumerator ShootCoinFX(int amt, Vector2 pos) {
 
         for (int i = 0; i < amt; i++)
@@ -109,7 +202,6 @@ public class Master : MonoBehaviour
     }
 
     IEnumerator FlashBackground(Color color) {
-        Color defColor = bg.color;
         bg.color = color;
         float time = 100f;
 
@@ -133,15 +225,11 @@ public class Master : MonoBehaviour
     }
 
     public void UpdateUI() {
-        if (livePoints == 0) {
-            livePointsUI.enabled = false;
-        } else {
-            livePointsUI.enabled = true;
-        }
         livePointsUI.text = "" + livePoints;
         team1PointsUI.text = "" + players[0].points;
         team2PointsUI.text = "" + players[1].points;
     }
+
 
     PlayerController GetWinningPlayer() {
         PlayerController ply = null;
@@ -158,9 +246,35 @@ public class Master : MonoBehaviour
         return ply;
     }
 
+    public void SpawnPuck(Transform t, int id) {
+
+        PuckController p = Instantiate(puckObj, t.position, Quaternion.identity).GetComponent<PuckController>();
+        p.coll.enabled = false;
+        players[id].flicking = true;
+        Destroy(puck.gameObject);
+        puck = p;
+
+        puck.reticle.SetActive(true);
+        Camera.main.GetComponent<CameraController>().t3 = puck.transform;
+    }
+
+
+
+    void SpawnPuck(GoalController g, int id) {
+
+        puck = Instantiate(puckObj, g.puckSpawn.position, Quaternion.identity).GetComponent<PuckController>();
+        if (g.playerId != 3) {
+            players[1-g.playerId].flicking = true;
+        } else {
+            players[id].flicking = true;
+        }
+        puck.reticle.SetActive(true);
+        Camera.main.GetComponent<CameraController>().t3 = puck.transform;
+    }
+
     void SpawnPuck() {
 
-        puck = Instantiate(puckObj, new Vector2(0, 10), Quaternion.identity).GetComponent<PuckController>();
+        puck = Instantiate(puckObj, puckSpawn.position, Quaternion.identity).GetComponent<PuckController>();
         StartCoroutine(PuckInvuln());
         Camera.main.GetComponent<CameraController>().t3 = puck.transform;
 
@@ -194,17 +308,20 @@ public class Master : MonoBehaviour
         Collider2D coll = puck.GetComponent<Collider2D>();
         coll.enabled = false;
         puck.transform.localScale = new Vector3(maxScale, maxScale, maxScale);
-        float len = 100f;
-        for (int i = 0; i < len; i++)
+        float len = 50f;
+        for (int i = 0; i <= len; i++)
         {
-            float desScale = Mathf.Lerp(puck.transform.localScale.x, defScale, i/len);
+            float desScale = Mathf.Lerp(maxScale, defScale, i/len);
             puck.transform.localScale = new Vector3(desScale, desScale, desScale);
-            yield return new WaitForSeconds(.01f);        
+            yield return new WaitForSeconds(.0001f);        
         }
 
+        Debug.Log("!");
         coll.enabled = true;
 
     }
+
+    
 
     void Initialize() {
         if (me == null) {

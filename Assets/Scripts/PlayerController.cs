@@ -24,6 +24,11 @@ public class PlayerController : MonoBehaviour
     public float dashSpeed;
 
     public bool hasPuck;
+    public bool flicking;
+    public bool startedFlick;
+    bool flicked;
+    Vector2 flickDir = Vector2.zero;
+    public float flickSpd;
     PuckController puck;
     public bool shooting;
     int framesSinceShot = 11;
@@ -33,7 +38,6 @@ public class PlayerController : MonoBehaviour
     float framesSinceDash;
     public float dashTimer;
 
-    public int livePoints;
     public int points;
 
     public AudioClip sfx_shoot;
@@ -43,6 +47,13 @@ public class PlayerController : MonoBehaviour
 
     public GoalieController goal;
     public GameObject reticle;
+    public GameObject head;
+
+    public FlapController leftFlap;
+    public FlapController rightFlap;
+
+    public CircleCollider2D hitbox;
+
 
 
 
@@ -73,6 +84,7 @@ public class PlayerController : MonoBehaviour
 
         if (rewiredPlayer.GetButtonDown("Restart")) {
             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+            Time.timeScale = 1;
         }
         lStickDir = new Vector2(rewiredPlayer.GetAxis("Move Horizontal"), rewiredPlayer.GetAxis("Move Vertical"));
 
@@ -84,6 +96,10 @@ public class PlayerController : MonoBehaviour
                 shooting = true;
                 shootSpd += maxShootSpd/80f;
                 shootSpd = Mathf.Clamp(shootSpd, 0, maxShootSpd);
+            }
+
+            if (flicking) {
+                flicked = true;
             }
         }
 
@@ -105,12 +121,25 @@ public class PlayerController : MonoBehaviour
             // ControlPuck(p);
         }
 
-        if (rewiredPlayer.GetButtonDown("LeftFlap")) {
-            Master.me.leftFlap.StartFlap();
-        } 
+        // if (rewiredPlayer.GetButton("LeftFlap")) {
+        //     Debug.Log("left flap!");
+        //     leftFlap.flapping = true;
+        // } else {
+        //     leftFlap.flapping = false;
+        // }
 
+        // if (rewiredPlayer.GetButton("RightFlap")) {
+        //     Debug.Log("right flap!");
+        //     rightFlap.flapping = true;
+        // } else {
+        //     rightFlap.flapping = false;
+        // }
+
+        if (rewiredPlayer.GetButtonDown("LeftFlap")) {
+            leftFlap.StartFlap();
+        }
         if (rewiredPlayer.GetButtonDown("RightFlap")) {
-            Master.me.rightFlap.StartFlap();
+            rightFlap.StartFlap();
         }
     }
 
@@ -120,6 +149,7 @@ public class PlayerController : MonoBehaviour
         framesSinceShot ++;
         framesSinceDash ++;
         SkateAudio();
+        FlickPuck();
 
         float dot = Vector2.Dot(lStickDir.normalized, lastStickDir);
         if (dot < .97f && dot != 0) {
@@ -132,13 +162,16 @@ public class PlayerController : MonoBehaviour
         if (moveDir != Vector2.zero) {
             speed+=accel;
             lastStickDir = moveDir;
-            reticle.transform.position = (Vector2)transform.position+moveDir*.5f;
+            reticle.transform.position = (Vector2)transform.position+moveDir*(transform.lossyScale.x * .8f);
+            head.transform.position = (Vector2)transform.position+moveDir*.9f;
             //transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(lStickDir) - 90);
             transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(vel) - 90);
         } else {
             speed -= deaccel;
             speed = Mathf.Clamp(speed, 0, maxSpeed);
-            reticle.transform.position = (Vector2)transform.position + lastStickDir*.5f;
+            reticle.transform.position = (Vector2)transform.position + lastStickDir*(transform.lossyScale.x * .8f);
+            head.transform.position = (Vector2)transform.position + lastStickDir*.9f;
+
         }
 
 
@@ -153,8 +186,9 @@ public class PlayerController : MonoBehaviour
             vel *= .85f;
         }
 
-
-        rb.MovePosition((Vector2)transform.position + vel);
+        if (!flicking) {
+            rb.MovePosition((Vector2)transform.position + vel);
+        }
         if (Master.me.goaliesEnabled) {
             MoveGoalie();
         }
@@ -164,15 +198,17 @@ public class PlayerController : MonoBehaviour
         shooting = false;
         if (framesSinceDash > dashTimer) {
             Vector2 dir = lStickDir.normalized;
-            vel*=2.5f;
+            //Debug.Log(dir);
+            vel+=dir*1.5f;
             framesSinceDash = 0;
+            StartCoroutine(scaleHitbox());
         }
     }
 
     void ShootPuck() {
         if (puck) {
             //SoundController.me.PlaySoundAtNormalPitch(sfx_shoot, 1f, transform.position.x);
-            SoundController.me.PlayRandomSound(SoundController.me.sfx_shots);
+            SoundController.me.PlayRandomSound(SoundController.me.sfx_shots, .5f);
             shooting = false;
             Vector2 dir;
             if (lStickDir == Vector2.zero) {
@@ -196,6 +232,15 @@ public class PlayerController : MonoBehaviour
             p.playerControllingPuck = this;
             hasPuck = true;
             puck = p;
+
+            //if (playerId == 1)
+            //{
+            //    Master.me.players[0].hasPuck = false;
+            //}
+            //else
+            //{
+            //    Master.me.players[1].hasPuck = false;
+            //}
         }
     }
 
@@ -208,6 +253,36 @@ public class PlayerController : MonoBehaviour
 
     public bool CanShoot() {
         return framesSinceShot > shotTimer;
+    }
+
+    public void FlickPuck() {
+        if (flicking) {
+            Vector2 pos = -lStickDir * Mathf.Lerp(0, flickSpd, lastStickDir.magnitude);
+            Master.me.puck.reticle.transform.position = Vector2.MoveTowards(Master.me.puck.reticle.transform.position, (Vector2)Master.me.puck.transform.position + pos, .7f);
+            Master.me.puck.UpdateLine();
+
+            if (lStickDir.magnitude > flickDir.magnitude) {
+                flickDir = lStickDir;
+            }
+
+            if (lStickDir != Vector2.zero) {
+                startedFlick = true;
+            }
+
+            if (startedFlick && lStickDir == Vector2.zero) {
+                Master.me.puck.reticle.SetActive(false);
+                coll.enabled = true;
+                SoundController.me.PlayRandomSound(SoundController.me.sfx_shots);
+                flicked = false;
+                flicking = false;
+                startedFlick = false;
+                Vector2 dir;
+                dir = -flickDir;
+                float fSpeed = Mathf.Lerp(0, flickSpd, flickDir.magnitude);
+                Master.me.puck.Shoot(fSpeed, dir);
+                flickDir = Vector2.zero;
+            }
+        }
     }
 
     void MoveGoalie() {
@@ -239,9 +314,11 @@ public class PlayerController : MonoBehaviour
 
         if (coll.gameObject.tag == "Player") {
             PlayerController p = coll.gameObject.GetComponent<PlayerController>();
-            if (puck && p.vel.magnitude > 0.2f) {
-                // puck.DropPuck(p.vel);
-                // DropPuck();
+            if (puck && p.vel.magnitude > 0.08f) {
+                framesSinceShot = 0;
+                Debug.Log("smashed");
+                puck.DropPuck(p.vel);
+                DropPuck();
             }
 
             //vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (p.vel.magnitude*5);
@@ -250,14 +327,15 @@ public class PlayerController : MonoBehaviour
                 Master.me.collided = true;
                 //vel = collDir * p.vel.magnitude;
                 Debug.Log(p.speed);
+                p.vel = (coll.transform.position - transform.position).normalized;
+                p.speed += .85f * speed;
                 vel = collDir * p.speed * 4f;
-                p.speed *= .45f;
             } else
             {
                 Master.me.collided = false;
             }
 
-            Master.me.shake.SetScreenshake(p.vel.magnitude*6, .25f, collDir);
+            //Master.me.shake.SetScreenshake(p.vel.magnitude*6, .25f, collDir);
 
         }
 
@@ -267,9 +345,10 @@ public class PlayerController : MonoBehaviour
 
         if (coll.gameObject.tag == "Puck") {
             PuckController p = coll.gameObject.GetComponent<PuckController>();
+            p.lastPlayerTouched = this;
+            p.UpdatePuckColor();
             //Vector2 dir = (Vector2)p.transform.position - coll.contacts[0].point;
             //p.vel = dir;
-            p.lastPlayerTouched = this;
             //Debug.Log("DIR: " + p.vel);
             //Debug.Log("SPEED: " + p.spd);
         }
@@ -294,6 +373,26 @@ public class PlayerController : MonoBehaviour
 
     public void SetColor(Color c) {
         spr.color = c;
-        reticle.GetComponent<SpriteRenderer>().color = new Color(c.r+.05f, c.g+.05f, c.b+.05f);
+        head.GetComponent<SpriteRenderer>().color = new Color(c.r+.1f, c.g+.1f, c.b+.1f);
+        reticle.GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
+    IEnumerator scaleHitbox() {
+        float defSize = 2;
+        float maxSize = 4;
+        float duration = 30;
+
+        for(float i = 0; i<duration; i++) {
+            float desSize = Mathf.Lerp(defSize, maxSize, i/duration);
+            hitbox.radius = desSize;
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        for(float i = 0; i<duration; i++) {
+            float desSize = Mathf.Lerp(maxSize, defSize, i/duration);
+            hitbox.radius = desSize;
+            yield return new WaitForSeconds(0.01f);
+        }
+
     }
 }

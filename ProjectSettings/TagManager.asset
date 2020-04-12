@@ -13,6 +13,9 @@ TagManager:
   - Warp
   - PuckSpawn
   - ZoomGate
+  - Bouncer
+  - GoalChanger
+  - Hole
   layers:
   - Default
   - TransparentFX

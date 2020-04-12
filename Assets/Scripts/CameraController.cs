@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
     {
 
         // How many units should we keep from the players
-    float zoomFactor = 1.5f;
+    float zoomFactor = 5f;
     float followTimeDelta = 0.8f;
     Vector3 midpoint;
     //midpoint = (t1.position + t2.position) / 2f;
@@ -53,7 +53,7 @@ public class CameraController : MonoBehaviour
          // The camera's forward vector is irrelevant, only this size will matter
          float newSize = baseSize + distance;
          newSize = Mathf.Clamp(newSize, baseSize, maxSize);
-         cam.orthographicSize = newSize;
+         cam.orthographicSize = Mathf.MoveTowards(cam.orthographicSize, newSize, .1f);
      }
      // You specified to use MoveTowards instead of Slerp
      cam.transform.position = Vector3.Slerp(cam.transform.position, cameraDestination, followTimeDelta);

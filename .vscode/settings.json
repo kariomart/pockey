@@ -52,5 +52,7 @@
         "ProjectSettings/":true,
         "temp/":true,
         "Temp/":true
-    }
+    },
+    "editor.suggest.showReferences": false,
+    "csharp.referencesCodeLens.enabled": false
 }

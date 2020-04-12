@@ -23,9 +23,14 @@ public class PuckController : MonoBehaviour
     public PlayerController playerControllingPuck;
     public PlayerController lastPlayerTouched;
     public PlayerController playerLastShot;
+    public int collTime;
+    public int collTimer = 60;
 
     public AudioClip sfx_bounce;
-    public AudioClip sfx_bumperHit;
+
+    public GameObject reticle;
+
+    LineRenderer line;
 
 
 
@@ -36,6 +41,7 @@ public class PuckController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<CircleCollider2D>();
         trail = GetComponentInChildren<ParticleSystem>();
+        line = GetComponentInChildren<LineRenderer>();
     }
 
     // Update is called once per frame
@@ -52,6 +58,7 @@ public class PuckController : MonoBehaviour
             //vel += playerLastShot.lStickDir*.5f;
         }
         //vel.Normalize();
+        collTime ++;
 
        
     }
@@ -75,16 +82,25 @@ public class PuckController : MonoBehaviour
     public void Shoot(float inheritedVel, Vector2 dir) {
         aftertouchFrames = 0;
         controlled = false;
+        playerLastShot = playerControllingPuck;
         playerControllingPuck = null;
         vel = dir;
         spd = baseSpd + inheritedVel;
-        Debug.Log(spd);
         trail.Play();
+        coll.enabled = true;
+        spr.enabled = true;
+        collTime = 0;
+        UpdatePuckColor();
     }
 
-    public void Control(Transform stick) {
+    public void Control(Transform stick, PlayerController p) {
+        Debug.Log(p);
+        lastPlayerTouched = p;
         this.stick = stick;
         controlled = true;
+        UpdatePuckColor();
+        coll.enabled = false;
+        spr.enabled = false;
         trail.Stop();
     }
 
@@ -93,7 +109,11 @@ public class PuckController : MonoBehaviour
         vel = dir;
         controlled = false;
         playerControllingPuck = null;
+        coll.enabled = true;
+        spr.enabled = true;
+        UpdatePuckColor();
     }
+
 
     void OnCollisionEnter2D(Collision2D coll) {
 
@@ -105,47 +125,83 @@ public class PuckController : MonoBehaviour
             Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
         }
 
-        if (coll.gameObject.tag == "Player") {
-            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.8f);
+        else if (coll.gameObject.tag == "Player") {
+            PlayerController p = coll.gameObject.GetComponent<PlayerController>();
+            if (playerLastShot != p || collTime > collTimer) {
+                //vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.8f);
+                //lastPlayerTouched = coll.gameObject.GetComponent<PlayerController>();
+                UpdatePuckColor();
+            }
         }
 
-        if (coll.gameObject.tag == "Flap") {
+        else if (coll.gameObject.tag == "Flap") {
             PlayBounceSound();
         }
 
-        if (coll.gameObject.tag == "Bumper" && !controlled) {
+        else if (coll.gameObject.tag == "Bumper" && !controlled) {
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal);
             spd *= Random.Range(1f, 2f);
-            Master.me.shake.SetScreenshake(.5f, .4f);
-            int pts = Random.Range(2, 5);
-            StartCoroutine(PlayBumperSound(pts));
-            Master.me.livePoints += pts;
-            Master.me.UpdateUI();
             BumperController b = coll.gameObject.GetComponent<BumperController>();
-            if (b)
-            {
-                b.StartCoroutine("ColorBlast");
-                if (b.flapBumper)
-                {
-                    b.desAngle += Random.Range(20, 100);
-                }
-            }
             Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
+            if (b) {
+                b.Hit(this);
+            }
         }
 
-        if (coll.gameObject.tag == "Slingshot") {
+        else if (coll.gameObject.tag == "Bouncer" && !controlled) {
+            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal);
+            spd *= Random.Range(1f, 2f);
+            BouncerController b = coll.gameObject.GetComponent<BouncerController>();
+            if (lastPlayerTouched) {
+                b.Hit(lastPlayerTouched.playerId);
+            } else {
+                b.Hit();
+            }
+        }
+
+        else if (coll.gameObject.tag == "GoalChanger" && !controlled) {
+            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal);
+            spd *= Random.Range(1f, 2f);
+            GoalChangeController b = coll.gameObject.GetComponent<GoalChangeController>();
+            if (lastPlayerTouched) {
+                b.Hit(lastPlayerTouched.playerId);
+            } else {
+                b.Hit();
+            }
+        }
+
+        else if (coll.gameObject.tag == "Slingshot") {
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * Random.Range(1.5f,2f));
             Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
         }
 
     }
 
+    public void UpdatePuckColor() {
+        if (lastPlayerTouched) {
+            ChangeColor(Master.me.playerColors[lastPlayerTouched.playerId]);
+        } else {
+            ChangeColor(Color.white);
+        }
+    }
+
+    public void ChangeColor(Color c) {
+        spr.color = c;
+    }
+
+    public void UpdateLine() {
+        line.SetPosition(0, reticle.transform.position);
+        line.SetPosition(1, transform.position);
+    }
+
     void OnTriggerEnter2D(Collider2D coll) {
 
-        if (coll.gameObject.tag == "Goal" && !controlled) {
+        if (coll.gameObject.tag == "Goal") {
             GoalController g = coll.GetComponent<GoalController>();
             Debug.Log("scored!");
             Master.me.GoalScored(this, g);
+            Master.me.players[0].hasPuck = false;
+            Master.me.players[1].hasPuck = false;
             Destroy(this.gameObject);
             trail.Stop();
         }
@@ -168,11 +224,4 @@ public class PuckController : MonoBehaviour
         SoundController.me.PlayRandomSound(SoundController.me.sfx_wallHits);
     }
 
-    IEnumerator PlayBumperSound(int n) {
-        for (int i = 0; i < n; i++)
-        {
-            SoundController.me.PlaySoundAtPitch(sfx_bumperHit, .8f, Random.Range(0.8f, 1f) + (i*.1f));  
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
 }

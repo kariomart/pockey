@@ -46,7 +46,7 @@ public class DimeController : MonoBehaviour
         on = true;
         spr.color = onColor;
         framesSinceOff = 0;
-        SoundController.me.PlaySound(sfx_dime, .8f);
+        SoundController.me.PlaySound(sfx_dime, .4f);
     }
 
     public void TurnOff() {

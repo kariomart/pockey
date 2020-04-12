@@ -48,6 +48,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -111,6 +112,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db919d65569234814895cacdda196f3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  middleSprite: {fileID: 6192575377271002669}
+  flapBumper: 0
+  flapPivot: {fileID: 0}
+  desAngle: 0
+  speed: 0
+  controller: {fileID: 0}
+  sfx_bumperHit: {fileID: 8300000, guid: 3921d50ad5d6a4abda6e629ad1f1524d, type: 3}
 --- !u!1 &6192575377271002671
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,6 +164,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

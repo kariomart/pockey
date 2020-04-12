@@ -14,12 +14,23 @@ public class FlapController : MonoBehaviour
     SpriteRenderer sprite;
     Color defColor;
 
+    public int playerId;
+    public bool leftFlap;
+
     // Start is called before the first frame update
     void Start()
     {
         parent = transform.parent;
         sprite = GetComponent<SpriteRenderer>();
         defColor = sprite.color;
+        if (leftFlap) {
+            Master.me.players[playerId].leftFlap = this;
+        } else
+        {
+            Master.me.players[playerId].rightFlap = this;
+        }
+
+        parent.eulerAngles = new Vector3(parent.eulerAngles.x, parent.eulerAngles.y, startAng);
     }
 
     // Update is called once per frame
@@ -29,6 +40,19 @@ public class FlapController : MonoBehaviour
             //StartCoroutine(Flap());
         }
         
+    }
+
+    void FixedUpdate() {
+        // float newAng;
+
+        // if (flapping) {
+        //     newAng = Mathf.MoveTowards(parent.eulerAngles.z, endAng, 0.1f);
+        //     //Debug.Log(newAng);
+        // } else {
+        //     newAng = Mathf.MoveTowards(parent.eulerAngles.z, startAng, 0.1f);
+        // }
+
+        // parent.eulerAngles = new Vector3(parent.eulerAngles.x, parent.eulerAngles.y, newAng);
     }
 
     public void StartFlap() {

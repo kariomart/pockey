@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 163913394893659226}
   - component: {fileID: 163913394893659225}
   - component: {fileID: 163913394893659227}
+  - component: {fileID: 7921748075332138844}
   m_Layer: 0
   m_Name: Bouncer
-  m_TagString: Bumper
+  m_TagString: Bouncer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +47,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -118,3 +120,16 @@ EdgeCollider2D:
   - {x: 4.6842375, y: -0.5828934}
   - {x: 4.76239, y: -0.28568268}
   - {x: 4.7733383, y: -0.06995773}
+--- !u!114 &7921748075332138844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163913394893659224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fc9222c967bd415889a4daae91b1c0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlledID: -1

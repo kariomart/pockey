@@ -4705,6 +4705,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4811,8 +4812,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7840336748390805826}
   m_LocalRotation: {x: 0, y: 0, z: -1, w: 0.000034922778}
-  m_LocalPosition: {x: 1.6355, y: -0.56152, z: 0.52545}
-  m_LocalScale: {x: 3.648716, y: 3.648716, z: 3.648716}
+  m_LocalPosition: {x: 1.8417, y: -0.87355, z: 0.78629}
+  m_LocalScale: {x: 4.606139, y: 4.606139, z: 4.606139}
   m_Children:
   - {fileID: 7840336748967434874}
   - {fileID: 4772344935330924241}
@@ -4859,10 +4860,13 @@ MonoBehaviour:
   accel: 0.0007
   deaccel: 0.0006
   speed: 0
-  maxSpeed: 0.05
-  damping: 0.94
+  maxSpeed: 0.065
+  damping: 0.955
   dashSpeed: 0
   hasPuck: 0
+  flicking: 0
+  startedFlick: 0
+  flickSpd: 20
   shooting: 0
   shootSpd: 0
   maxShootSpd: 3
@@ -4874,6 +4878,8 @@ MonoBehaviour:
   vfx_ice: {fileID: 1772492802083706, guid: d869a559781204fd8bdeb534d31e5103, type: 3}
   goal: {fileID: 0}
   reticle: {fileID: 9182481673469658504}
+  leftFlap: {fileID: 0}
+  rightFlap: {fileID: 0}
 --- !u!1 &7840336748650722996
 GameObject:
   m_ObjectHideFlags: 0
@@ -4901,8 +4907,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7840336748650722996}
   m_LocalRotation: {x: -0, y: -0, z: -0.7070888, w: 0.70712477}
-  m_LocalPosition: {x: 1.0587, y: 0, z: 0}
-  m_LocalScale: {x: 0.13913354, y: 1.1314613, z: 1}
+  m_LocalPosition: {x: 1.0096, y: 0, z: 0}
+  m_LocalScale: {x: 0.13913354, y: 1.0332505, z: 1}
   m_Children:
   - {fileID: 7840336749046642513}
   m_Father: {fileID: 7840336748967434874}
@@ -4922,6 +4928,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5043,6 +5050,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5215,7 +5223,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7840336749046642512}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.88, y: 0.3182, z: 0}
+  m_LocalPosition: {x: -0.48, y: 0.325, z: 0}
   m_LocalScale: {x: 0.781, y: 0.35838038, z: 1}
   m_Children: []
   m_Father: {fileID: 7840336748650722997}
@@ -5235,6 +5243,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9975,6 +9984,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10049,7 +10059,7 @@ Transform:
   m_GameObject: {fileID: 9182481673469658504}
   m_LocalRotation: {x: -1.4210856e-14, y: -0, z: -0.94238275, w: -0.33453676}
   m_LocalPosition: {x: -0.5, y: -0.62, z: -0.61}
-  m_LocalScale: {x: 0.20564717, y: 0.20564723, z: 0.20564704}
+  m_LocalScale: {x: 0.2096466, y: 0.20964666, z: 0.20964645}
   m_Children: []
   m_Father: {fileID: 7840336748390805837}
   m_RootOrder: 2
@@ -10068,6 +10078,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

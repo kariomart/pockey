@@ -37,7 +37,7 @@ public class StickController : MonoBehaviour
         if (coll.gameObject.tag == "Puck" && !player.hasPuck && player.CanShoot()) {
             //Debug.Log("puck hit by end of stick !");
             PuckController p = coll.gameObject.GetComponent<PuckController>();
-            p.Control(endOfStick.transform);
+            p.Control(endOfStick.transform, player);
             if (p.playerControllingPuck) {
                 p.playerControllingPuck.hasPuck = false;
             }
