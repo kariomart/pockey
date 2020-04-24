@@ -4856,6 +4856,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 0
   spr: {fileID: 0}
+  color: {r: 0, g: 0, b: 0, a: 0}
   lStickDir: {x: 0, y: 0}
   accel: 0.0005
   deaccel: 0.0006
@@ -4865,20 +4866,24 @@ MonoBehaviour:
   dashSpeed: 0
   hasPuck: 0
   flicking: 0
+  startedFlick: 0
   flickSpd: 5
   shooting: 0
   shootSpd: 0
   maxShootSpd: 5
   dashTimer: 60
-  livePoints: 0
   points: 0
   sfx_shoot: {fileID: 0}
   skateAudio: {fileID: 0}
   vfx_ice: {fileID: 1772492802083706, guid: d869a559781204fd8bdeb534d31e5103, type: 3}
   goal: {fileID: 0}
   reticle: {fileID: 9182481673469658504}
+  head: {fileID: 0}
   leftFlap: {fileID: 0}
   rightFlap: {fileID: 0}
+  hitbox: {fileID: 0}
+  FX_ShotPuck: {fileID: 1827038251363868, guid: 64443844368ee4ac18ebafe9b217f430,
+    type: 3}
 --- !u!1 &7840336748650722996
 GameObject:
   m_ObjectHideFlags: 0

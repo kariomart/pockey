@@ -5069,6 +5069,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 0
   spr: {fileID: 0}
+  color: {r: 0, g: 0, b: 0, a: 0}
   lStickDir: {x: 0, y: 0}
   accel: 0.0007
   deaccel: 0.0006
@@ -5094,6 +5095,10 @@ MonoBehaviour:
   leftFlap: {fileID: 0}
   rightFlap: {fileID: 0}
   hitbox: {fileID: 7605757745838959072}
+  FX_ShotPuck: {fileID: 1827038251363868, guid: 64443844368ee4ac18ebafe9b217f430,
+    type: 3}
+  FX_MuzzleFlash: {fileID: 1832981136568564, guid: 1e551540f9dde44269db4603aee2fbfa,
+    type: 3}
 --- !u!1 &7840336748650722996
 GameObject:
   m_ObjectHideFlags: 0
@@ -5173,7 +5178,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3.18, y: 3.18}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -10313,7 +10318,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3.18, y: 3.18}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

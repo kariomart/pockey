@@ -5069,6 +5069,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 0
   spr: {fileID: 0}
+  color: {r: 0, g: 0, b: 0, a: 0}
   lStickDir: {x: 0, y: 0}
   accel: 0.0007
   deaccel: 0.0006
@@ -5094,6 +5095,8 @@ MonoBehaviour:
   leftFlap: {fileID: 0}
   rightFlap: {fileID: 0}
   hitbox: {fileID: 7605757745838959072}
+  FX_ShotPuck: {fileID: 1827038251363868, guid: 64443844368ee4ac18ebafe9b217f430,
+    type: 3}
 --- !u!1 &7840336748650722996
 GameObject:
   m_ObjectHideFlags: 0

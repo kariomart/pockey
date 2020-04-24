@@ -31,6 +31,7 @@ Transform:
   m_LocalScale: {x: 10.602192, y: 10.602192, z: 10.602193}
   m_Children:
   - {fileID: 6192575377271002668}
+  - {fileID: 8535336744015227454}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -119,6 +120,10 @@ MonoBehaviour:
   speed: 0
   controller: {fileID: 0}
   sfx_bumperHit: {fileID: 8300000, guid: 3921d50ad5d6a4abda6e629ad1f1524d, type: 3}
+  fx_hitparticle: {fileID: 7681600219343234529, guid: b309aeae686d24c429a1604ffe865eed,
+    type: 3}
+  ringLight: {fileID: 801102212469662765, guid: 11373148626014f8f888414da13b7f2c,
+    type: 3}
 --- !u!1 &6192575377271002671
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,7 +150,7 @@ Transform:
   m_GameObject: {fileID: 6192575377271002671}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.07}
-  m_LocalScale: {x: 0.8734843, y: 0.8734843, z: 0.8734843}
+  m_LocalScale: {x: 0.2766763, y: 0.2766763, z: 0.2766763}
   m_Children: []
   m_Father: {fileID: 6192575377199079881}
   m_RootOrder: 0
@@ -189,7 +194,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 3825896a84e8d426daa6de23ea12a571, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ca2c9be0609ec4f9ba89d61d66cbbb30, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -200,3 +205,92 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &7747553635089951496
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8535336744015227454}
+  - component: {fileID: 2604148075801198471}
+  - component: {fileID: 2960925310578129220}
+  m_Layer: 0
+  m_Name: Point Light 2D
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8535336744015227454
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7747553635089951496}
+  m_LocalRotation: {x: -0, y: -0, z: -0.08392532, w: 0.99647206}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.09432012, y: 0.09432012, z: 0.09432011}
+  m_Children: []
+  m_Father: {fileID: 6192575377199079881}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2604148075801198471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7747553635089951496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LightType: 3
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.542
+  m_Color: {r: 1, g: 0.7971698, b: 0.906101, a: 1}
+  m_Intensity: 1
+  m_LightVolumeOpacity: 0
+  m_ApplyToSortingLayers: 00000000
+  m_LightCookieSprite: {fileID: 0}
+  m_UseNormalMap: 1
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_ShadowIntensity: 0
+  m_ShadowVolumeIntensity: 0
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 6.09
+  m_PointLightOuterRadius: 17.15
+  m_PointLightDistance: 3
+  m_PointLightQuality: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &2960925310578129220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7747553635089951496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9f069a4276bb4a838dcf7097049474b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  light: {fileID: 0}
+  minIntensity: 0.8
+  maxIntensity: 1.2
+  smoothing: 47

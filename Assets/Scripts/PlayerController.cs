@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     public SpriteRenderer spr;
     Collider2D coll;
+    public Color color;
 
     public Vector2 lStickDir;
     Vector2 lastStickDir;
@@ -53,6 +54,9 @@ public class PlayerController : MonoBehaviour
     public FlapController rightFlap;
 
     public CircleCollider2D hitbox;
+
+    public GameObject FX_ShotPuck;
+    public GameObject FX_MuzzleFlash;
 
 
 
@@ -224,6 +228,15 @@ public class PlayerController : MonoBehaviour
             puck.lastPlayerTouched = this;
             puck.playerLastShot = this;
             puck = null;
+            //float rotDir = Geo.ToAng(dir);
+            float ang = Geo.ToAng(dir) + 180;
+            Transform t = Instantiate(FX_ShotPuck, (Vector2)transform.position + (dir * 4f), Quaternion.Euler(new Vector3(360 - ang, 90, 0))).transform;
+            ParticleSystem.MainModule p = t.gameObject.GetComponent<ParticleSystem>().main;
+            p.startColor = new ParticleSystem.MinMaxGradient(Color.red, color);
+
+            Transform t1 = Instantiate(FX_MuzzleFlash, (Vector2)transform.position + (dir * 2f), Quaternion.Euler(new Vector3(360 - ang, 90, 0))).transform;
+            //t.localEulerAngles = new Vector3(rotDir-180,0,0);
+
         }
     }
 
@@ -373,6 +386,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetColor(Color c) {
         spr.color = c;
+        color = c;
         head.GetComponent<SpriteRenderer>().color = new Color(c.r+.1f, c.g+.1f, c.b+.1f);
         reticle.GetComponent<SpriteRenderer>().color = Color.white;
     }

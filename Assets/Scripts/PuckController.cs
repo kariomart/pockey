@@ -34,6 +34,7 @@ public class PuckController : MonoBehaviour
 
 
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -122,7 +123,7 @@ public class PuckController : MonoBehaviour
                 PlayBounceSound();
             }
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.8f);
-            Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point);
+            Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point + (coll.contacts[0].normal * .15f), lastPlayerTouched.color);
         }
 
         else if (coll.gameObject.tag == "Player") {

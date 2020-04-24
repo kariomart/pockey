@@ -224,6 +224,12 @@ public class Master : MonoBehaviour
         Instantiate(p, pos, Quaternion.identity);
     }
 
+    public void SpawnParticle(GameObject p, Vector2 pos, Color c) {
+        var main = p.gameObject.GetComponent<ParticleSystem>().main;
+        main.startColor = c;
+        Instantiate(p, pos, Quaternion.identity);
+    }
+
     public void UpdateUI() {
         livePointsUI.text = "" + livePoints;
         team1PointsUI.text = "" + players[0].points;
