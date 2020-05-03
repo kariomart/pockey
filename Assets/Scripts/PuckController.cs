@@ -27,22 +27,34 @@ public class PuckController : MonoBehaviour
     public int collTimer = 60;
 
     public AudioClip sfx_bounce;
+    public AudioClip sfx_angledBouncerHit;
 
     public GameObject reticle;
 
     LineRenderer line;
 
+    ParticleSystem ps;
+    bool tempPuck = false;
+
+    public int bounceTimer;
+    public int bounceIndex;
+
+    public Transform orbitObj;
+    public bool orbitting;
+    public float ang;
+
 
 
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         spr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<CircleCollider2D>();
         trail = GetComponentInChildren<ParticleSystem>();
         line = GetComponentInChildren<LineRenderer>();
+        ps = transform.GetChild(0).transform.GetChild(0).GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -60,9 +72,39 @@ public class PuckController : MonoBehaviour
         }
         //vel.Normalize();
         collTime ++;
+        bounceTimer++;
+        if (bounceTimer > 180f) {
+            bounceIndex = Random.Range(0, SoundController.me.sfx_wallHits.Count);
+        }
+
+        if (!orbitting && collTime > 3 && !controlled && coll.enabled == false) {
+            coll.enabled = true;
+        }
+
+        if (orbitting) {
+            Orbit();
+        }
 
        
     }
+
+    public void StartOrbit(PlayerController p) {
+        trail.Stop();
+        coll.enabled = false;
+        orbitting = true;
+        orbitObj = p.transform;
+        ang = Geo.ToAng(transform.position - orbitObj.position);
+    }
+
+    public void Orbit() {
+        ang += 5;
+        ang %= 360;
+        //spr.color = new Color(spr.color.r, spr.color.g, spr.color.b, .5f);
+        Vector2 newPos = Geo.ToVect(ang);
+        transform.position = ((Vector2)orbitObj.position + newPos * (.7f * orbitObj.localScale.x));
+    }
+
+
 
     void LateUpdate() {
 
@@ -80,22 +122,36 @@ public class PuckController : MonoBehaviour
         }
     }
 
-    public void Shoot(float inheritedVel, Vector2 dir) {
+    public void Shoot(Vector2 objDir, float shotSpeed) {
         aftertouchFrames = 0;
         controlled = false;
+        playerControllingPuck.hasPuck = false;
         playerLastShot = playerControllingPuck;
         playerControllingPuck = null;
-        vel = dir;
-        spd = baseSpd + inheritedVel;
+        vel = objDir;
+        spd = baseSpd + shotSpeed;
         trail.Play();
         coll.enabled = true;
         spr.enabled = true;
+        orbitting = false;
+        collTime = 0;
+        UpdatePuckColor();
+    }
+
+    public void Shoot(Vector2 objDir, float shotSpeed, bool a) {
+        aftertouchFrames = 0;
+        orbitting = false;
+        //playerLastShot = playerControllingPuck;
+        playerControllingPuck = null;
+        vel = objDir;
+        spd = baseSpd + shotSpeed;
+        trail.Play();
+        //coll.enabled = true;
         collTime = 0;
         UpdatePuckColor();
     }
 
     public void Control(Transform stick, PlayerController p) {
-        Debug.Log(p);
         lastPlayerTouched = p;
         this.stick = stick;
         controlled = true;
@@ -112,6 +168,7 @@ public class PuckController : MonoBehaviour
         playerControllingPuck = null;
         coll.enabled = true;
         spr.enabled = true;
+        trail.Play();
         UpdatePuckColor();
     }
 
@@ -123,7 +180,10 @@ public class PuckController : MonoBehaviour
                 PlayBounceSound();
             }
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.8f);
-            Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point + (coll.contacts[0].normal * .15f), lastPlayerTouched.color);
+
+            if (lastPlayerTouched) {
+                Master.me.SpawnParticle(Master.me.collisionParticle, coll.contacts[0].point + (coll.contacts[0].normal * .15f), lastPlayerTouched.color);
+            }
         }
 
         else if (coll.gameObject.tag == "Player") {
@@ -160,6 +220,15 @@ public class PuckController : MonoBehaviour
             }
         }
 
+        else if (coll.gameObject.tag == "AngledBouncer" && !controlled) {
+            vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal);
+            spd *= Random.Range(1f, 2f);
+            GameObject v = Instantiate(Master.me.angledBouncerVFX, coll.transform.position, Quaternion.identity);
+            v.transform.localEulerAngles = new Vector3(0, 0, Geo.ToAng(coll.contacts[0].normal));
+            SoundController.me.PlaySoundAtNormalPitch(sfx_angledBouncerHit, 1f, coll.transform.position.x);
+        }
+
+
         else if (coll.gameObject.tag == "GoalChanger" && !controlled) {
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal);
             spd *= Random.Range(1f, 2f);
@@ -188,11 +257,17 @@ public class PuckController : MonoBehaviour
 
     public void ChangeColor(Color c) {
         spr.color = c;
+        ps.startColor = new Color(c.r, c.g, c.b, .5f);
+    }
+
+    public void UpdateAlpha(float a) {
+        spr.color = new Color(spr.color.r, spr.color.g, spr.color.b, a);
+        //ps.startColor = new Color(spr.color.r, c.g, c.b, .5f);
     }
 
     public void UpdateLine() {
-        line.SetPosition(0, reticle.transform.position);
-        line.SetPosition(1, transform.position);
+        // line.SetPosition(0, reticle.transform.position);
+        // line.SetPosition(1, transform.position);
     }
 
     void OnTriggerEnter2D(Collider2D coll) {
@@ -221,8 +296,13 @@ public class PuckController : MonoBehaviour
     }
 
     void PlayBounceSound() {
+        bounceTimer = 0;
         //SoundController.me.PlaySoundAtNormalPitch(sfx_bounce, 1f, transform.position.x);
-        SoundController.me.PlayRandomSound(SoundController.me.sfx_wallHits);
+        AudioClip a = SoundController.me.sfx_wallHits[bounceIndex];
+        bounceIndex++;
+        bounceIndex %= SoundController.me.sfx_wallHits.Count;
+        SoundController.me.PlaySoundAtNormalPitch(a, .8f, transform.position.x);
+        //SoundController.me.PlayRandomSound(SoundController.me.sfx_wallHits, .8f, transform.position.x);
     }
 
 }

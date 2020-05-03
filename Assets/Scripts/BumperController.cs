@@ -19,7 +19,9 @@ public class BumperController : MonoBehaviour
     public AudioClip sfx_bumperHit;
     FlapController flapper;
     public GameObject fx_hitparticle;
-    public Light2D ringLight;
+    public GameObject fx_particles;
+    public SpriteRenderer ringLight;
+    public Light2D mainLight;    
 
     // Start is called before the first frame update
     void Start()
@@ -60,13 +62,17 @@ public class BumperController : MonoBehaviour
         }
 
         Master.me.shake.SetScreenshake(.5f, .4f);
+        //Instantiate(fx_particles, transform.position, Quaternion.identity);
         int pts = Random.Range(2, 5);
-        StartCoroutine(BumperAnimation(pts, p.lastPlayerTouched.color));
+
         if (p.lastPlayerTouched) {
-            p.lastPlayerTouched.points += pts;
+            //p.lastPlayerTouched.points += pts;
+            StartCoroutine(BumperAnimation(pts, p.lastPlayerTouched.color));
+            StartCoroutine(Master.me.AddPoints(pts,  p.lastPlayerTouched.playerId));
+        } else {
+            Reset();
         }
-        Master.me.livePoints += pts;
-        Master.me.UpdateUI();
+        StartCoroutine(Master.me.AddPoints(pts));
         StartCoroutine("ColorBlast");
         // GameObject g = Instantiate(fx_hitparticle, transform.position, Quaternion.identity);
         // ParticleSystem ps = g.GetComponent<ParticleSystem>();
@@ -103,8 +109,10 @@ public class BumperController : MonoBehaviour
         for (int i = 0; i < n; i++)
         {
             SoundController.me.PlaySoundAtPitch(sfx_bumperHit, .2f, Random.Range(0.8f, 1f) + (i*.1f));  
-            Light2D l = Instantiate(ringLight, transform.position, Quaternion.identity);
-            l.color = c;
+            //Light2D l = Instantiate(ringLight, transform.position, Quaternion.identity);
+            //l.color = c;
+            SpriteRenderer s = Instantiate(ringLight, transform.position, Quaternion.identity);
+            s.color = c;
 
             yield return new WaitForSeconds(0.1f);
         }
@@ -112,9 +120,11 @@ public class BumperController : MonoBehaviour
 
     public void UpdateColor() {
         if (controller) {
-            middleSprite.color = Master.me.playerColors[controller.playerId];
+            middleSprite.color = controller.color;;
+            mainLight.color = controller.color;
         } else {
             middleSprite.color = Color.white;
+            mainLight.color = Color.white;
         }
     }
 

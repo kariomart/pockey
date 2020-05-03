@@ -147,7 +147,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7136552372393736954
 Transform:
   m_ObjectHideFlags: 0
@@ -5081,12 +5081,14 @@ MonoBehaviour:
   flicking: 0
   startedFlick: 0
   flickSpd: 20
+  puck: {fileID: 0}
   shooting: 0
   shootSpd: 0
-  maxShootSpd: 3
+  maxShootSpd: 7
   dashTimer: 60
   points: 0
   sfx_shoot: {fileID: 8300000, guid: 5e4d0ba27975d4c21907fd9110ce723d, type: 3}
+  sfx_orbitShoot: {fileID: 8300000, guid: 390fb6a4f181f4390806a7a3c615b1b5, type: 3}
   skateAudio: {fileID: 0}
   vfx_ice: {fileID: 1772492802083706, guid: d869a559781204fd8bdeb534d31e5103, type: 3}
   goal: {fileID: 0}
@@ -5099,6 +5101,7 @@ MonoBehaviour:
     type: 3}
   FX_MuzzleFlash: {fileID: 1832981136568564, guid: 1e551540f9dde44269db4603aee2fbfa,
     type: 3}
+  orbittingPucks: []
 --- !u!1 &7840336748650722996
 GameObject:
   m_ObjectHideFlags: 0

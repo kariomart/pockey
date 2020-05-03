@@ -72,16 +72,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9846211d0660847fdb51aa7250f123e7, type: 3}
   m_Name: RLProPulsatingVignette
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   speed:
     overrideState: 1
-    value: 42.2
+    value: 38.2
   amount:
     overrideState: 1
-    value: 1.3
+    value: 0.8
 --- !u!114 &-7661672180156857309
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -161,19 +161,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2585c6ab0fec349748f8f04c4db5ba0a, type: 3}
   m_Name: RLProArtefacts
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   cutOff:
     overrideState: 1
-    value: 0.665
+    value: 0.14
   amount:
     overrideState: 1
-    value: 0.66
+    value: 2.75
   fade:
     overrideState: 1
-    value: 0.69
+    value: 0.476
   color:
     overrideState: 1
     value: {r: 1, g: 1, b: 1, a: 0}
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa708a4c07b4f9e4abfa2c75cbbccccf, type: 3}
   m_Name: RLProPhosphor
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
@@ -260,19 +260,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6e7d18b1240f2c4d8356b4bd515ef30, type: 3}
   m_Name: RLProAnalogTVNoise
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   staticNoise:
     overrideState: 1
-    value: 0
+    value: 1
   Horizontal:
     overrideState: 1
     value: 1
   Fade:
     overrideState: 1
-    value: 0.377
+    value: 0.076
   barHeight:
     overrideState: 1
     value: 60
@@ -284,16 +284,16 @@ MonoBehaviour:
     value: 1
   edgeCutOff:
     overrideState: 1
-    value: 0
+    value: 12.8
   CutOff:
     overrideState: 1
     value: 1
   barSpeed:
     overrideState: 1
-    value: 24.8
+    value: 7.7
   texture:
     overrideState: 1
-    value: {fileID: 0}
+    value: {fileID: 2800000, guid: 293b39656e65a452bb601bed3ea1e78b, type: 3}
     defaultState: 1
 --- !u!114 &-4528486101908785398
 MonoBehaviour:
@@ -316,10 +316,10 @@ MonoBehaviour:
     value: 40
   blur:
     overrideState: 1
-    value: 0.01
+    value: 1.5
   lineSpeed:
     overrideState: 1
-    value: 3.1
+    value: 7.54
 --- !u!114 &-3952236337976327752
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -459,16 +459,16 @@ MonoBehaviour:
     value: 1
   amount:
     overrideState: 1
-    value: 0.06
+    value: 0.1
   stretch:
     overrideState: 1
-    value: 0.3
+    value: 2.76
   speed:
     overrideState: 1
     value: 0.182
   fade:
     overrideState: 1
-    value: 0.237
+    value: 0.104
   rMultiplier:
     overrideState: 1
     value: 1
@@ -1116,36 +1116,36 @@ MonoBehaviour:
     value: 1
   temperature:
     overrideState: 1
-    value: 0
+    value: -12
   tint:
     overrideState: 1
-    value: 0
+    value: 11
   colorFilter:
     overrideState: 1
-    value: {r: 1, g: 1, b: 1, a: 1}
+    value: {r: 1.1828533, g: 1.2125733, b: 1.5157166, a: 1}
   hueShift:
     overrideState: 1
     value: 0
   saturation:
     overrideState: 1
-    value: 0
+    value: 6
   brightness:
     overrideState: 1
     value: 0
   postExposure:
     overrideState: 1
-    value: 0
+    value: 1
   contrast:
     overrideState: 1
-    value: 0
+    value: 4
   mixerRedOutRedIn:
-    overrideState: 1
-    value: 100
+    overrideState: 0
+    value: 0
   mixerRedOutGreenIn:
-    overrideState: 1
+    overrideState: 0
     value: 0
   mixerRedOutBlueIn:
-    overrideState: 1
+    overrideState: 0
     value: 0
   mixerGreenOutRedIn:
     overrideState: 1
@@ -1166,13 +1166,13 @@ MonoBehaviour:
     overrideState: 1
     value: 100
   lift:
-    overrideState: 1
+    overrideState: 0
     value: {x: 1, y: 1, z: 1, w: 0}
   gamma:
-    overrideState: 1
+    overrideState: 0
     value: {x: 1, y: 1, z: 1, w: 0}
   gain:
-    overrideState: 1
+    overrideState: 0
     value: {x: 1, y: 1, z: 1, w: 0}
   masterCurve:
     overrideState: 1
@@ -2450,16 +2450,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42d0038bab82442e384f4ca3f5b777ca, type: 3}
   m_Name: RLProVHSEffect
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   colorOffset:
     overrideState: 1
-    value: 0
+    value: 0.6
   colorOffsetAngle:
     overrideState: 1
-    value: -3
+    value: -0.72
   verticalOffsetFrequency:
     overrideState: 1
     value: 1
@@ -2471,17 +2471,17 @@ MonoBehaviour:
     value: 3499
   noiseTexture:
     overrideState: 1
-    value: {fileID: 2800000, guid: 360ce7d71cde3304bae44063efe23548, type: 3}
+    value: {fileID: 2800000, guid: 3f2fd211b66c6450a887c4136e6f0b88, type: 3}
     defaultState: 1
   blendMode:
     overrideState: 1
-    value: 0
+    value: 12
   tile:
     overrideState: 1
     value: {x: 1, y: 1}
   _textureIntensity:
     overrideState: 1
-    value: 1
+    value: 0.123
   smoothCut:
     overrideState: 1
     value: 0
@@ -2858,7 +2858,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e9c123bb062cae41a4338fdbe9c6d6a, type: 3}
   m_Name: RLProLowRes
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 0

@@ -209,6 +209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controlledID: -1
   hitLight: {fileID: 2001259404}
+  SFX_hit: {fileID: 8300000, guid: 5d010578ef1994c4fb677c45d4cb9f68, type: 3}
 --- !u!1 &3346770616620491529
 GameObject:
   m_ObjectHideFlags: 0

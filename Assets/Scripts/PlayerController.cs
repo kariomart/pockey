@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     bool flicked;
     Vector2 flickDir = Vector2.zero;
     public float flickSpd;
-    PuckController puck;
+    public PuckController puck;
     public bool shooting;
     int framesSinceShot = 11;
     int shotTimer = 15;
@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
     public int points;
 
     public AudioClip sfx_shoot;
+    public AudioClip sfx_orbitShoot;
     public AudioSource skateAudio;
 
     public GameObject vfx_ice;
@@ -58,12 +59,11 @@ public class PlayerController : MonoBehaviour
     public GameObject FX_ShotPuck;
     public GameObject FX_MuzzleFlash;
 
-
-
+    public List<PuckController> orbittingPucks = new List<PuckController>();
 
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         rewiredPlayer = ReInput.players.GetPlayer(playerId);
         rb = GetComponent<Rigidbody2D>();
@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
         SetColor(Master.me.playerColors[playerId]);
         coll = transform.GetChild(0).GetComponent<CircleCollider2D>();
         skateAudio = GetComponentInChildren<AudioSource>();
+        SpawnOrbitPuck();
 
         // PlayerTuning tuning = Resources.Load<PlayerTuning>("MyTune");
         // jerk = tuning.jerk;
@@ -118,6 +119,15 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (rewiredPlayer.GetButtonDown("ReleasePuck")) {
+            ReleasePuck();
+        }
+
+        if (rewiredPlayer.GetButtonUp("Select")) {
+            //PauseGame();
+            //bring up menu
+        }
+
         if (rewiredPlayer.GetButtonDown("Call Puck")) {
             // PuckController p = Master.me.puck;
             // p.Control(transform.GetChild(0).transform.GetChild(0).transform.GetChild(0));
@@ -161,6 +171,7 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector2 moveDir = lStickDir.normalized; 
+        
         //reticle.transform.position = Vector2.Lerp(transform.position, (Vector2)transform.position + moveDir*1.25f, 1 - speed / maxSpeed);
 
         if (moveDir != Vector2.zero) {
@@ -209,6 +220,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void SpawnOrbitPuck() {
+
+        PuckController p = Instantiate(Master.me.puckObj, (Vector2)transform.position, /*+ sDir*/ Quaternion.identity).GetComponent<PuckController>();
+        p.Start();
+        AddToOrbit(p);
+
+    }
+
+    public void AddToOrbit(PuckController p) {
+        p.UpdateAlpha(1-(.3f*orbittingPucks.Count));
+        p.coll.enabled = false;
+        orbittingPucks.Add(p);
+        p.StartOrbit(this);
+    }
+
+    void ReleasePuck() {
+        if (orbittingPucks.Count > 0) {
+            PuckController p = orbittingPucks[0];
+            orbittingPucks.Remove(p);
+            SoundController.me.PlaySoundAtNormalPitch(sfx_orbitShoot, .5f);
+            p.Shoot(p.transform.position - transform.position, Random.Range(1.5f,3f), true);
+        }
+
+        int a = 0;
+        foreach(PuckController p in orbittingPucks) {
+           p.UpdateAlpha(1-(.3f*a));
+           a++;
+        }
+        
+        //Debug.Log(orbittingPucks.Count);
+    }
+
     void ShootPuck() {
         if (puck) {
             //SoundController.me.PlaySoundAtNormalPitch(sfx_shoot, 1f, transform.position.x);
@@ -220,14 +263,15 @@ public class PlayerController : MonoBehaviour
             } else {
                 dir = lastStickDir;
             }
-            Debug.Log(shootSpd);
-            puck.Shoot(vel.magnitude + shootSpd, dir);
+            puck.Shoot(dir + vel, shootSpd);
             shootSpd = 0;
             hasPuck = false;
             framesSinceShot = 0;
             puck.lastPlayerTouched = this;
             puck.playerLastShot = this;
             puck = null;
+            reticle.SetActive(false);
+            SetColor(new Color(spr.color.r, spr.color.g, spr.color.b, 1f));
             //float rotDir = Geo.ToAng(dir);
             float ang = Geo.ToAng(dir) + 180;
             Transform t = Instantiate(FX_ShotPuck, (Vector2)transform.position + (dir * 4f), Quaternion.Euler(new Vector3(360 - ang, 90, 0))).transform;
@@ -245,15 +289,7 @@ public class PlayerController : MonoBehaviour
             p.playerControllingPuck = this;
             hasPuck = true;
             puck = p;
-
-            //if (playerId == 1)
-            //{
-            //    Master.me.players[0].hasPuck = false;
-            //}
-            //else
-            //{
-            //    Master.me.players[1].hasPuck = false;
-            //}
+            reticle.SetActive(true);
         }
     }
 
@@ -292,7 +328,8 @@ public class PlayerController : MonoBehaviour
                 Vector2 dir;
                 dir = -flickDir;
                 float fSpeed = Mathf.Lerp(0, flickSpd, flickDir.magnitude);
-                Master.me.puck.Shoot(fSpeed, dir);
+                Master.me.puck.Shoot(dir, fSpeed);
+                Master.me.puck.coll.enabled = true;
                 flickDir = Vector2.zero;
             }
         }
@@ -325,7 +362,7 @@ public class PlayerController : MonoBehaviour
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.5f);
         }
 
-        if (coll.gameObject.tag == "Player") {
+        else if (coll.gameObject.tag == "Player") {
             PlayerController p = coll.gameObject.GetComponent<PlayerController>();
             if (puck && p.vel.magnitude > 0.08f) {
                 framesSinceShot = 0;
@@ -352,11 +389,11 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        if (coll.gameObject.tag == "Bumper") {
+        else if (coll.gameObject.tag == "Bumper" || coll.gameObject.tag == "Bouncer") {
             vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * Random.Range(1f, 1.25f);
         }
 
-        if (coll.gameObject.tag == "Puck") {
+        else if (coll.gameObject.tag == "Puck") {
             PuckController p = coll.gameObject.GetComponent<PuckController>();
             p.lastPlayerTouched = this;
             p.UpdatePuckColor();
@@ -366,7 +403,7 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("SPEED: " + p.spd);
         }
 
-        if (coll.gameObject.tag == "Flap") {
+        else if (coll.gameObject.tag == "Flap") {
             FlapController f = coll.gameObject.GetComponent<FlapController>();
             if (!f.flapping) {
                 vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.5f);

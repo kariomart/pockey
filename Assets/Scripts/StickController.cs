@@ -34,17 +34,25 @@ public class StickController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll) {
         
-        if (coll.gameObject.tag == "Puck" && !player.hasPuck && player.CanShoot()) {
-            //Debug.Log("puck hit by end of stick !");
+        if (coll.gameObject.tag == "Puck") {
             PuckController p = coll.gameObject.GetComponent<PuckController>();
-            p.Control(endOfStick.transform, player);
-            if (p.playerControllingPuck) {
-                p.playerControllingPuck.hasPuck = false;
-            }
-            p.playerControllingPuck = player;
-            player.ControlPuck(p);
+             if (player.puck == null ) {
+                 if (player.CanShoot()) {
+                    p.Control(endOfStick.transform, player);
+                    p.playerControllingPuck = player;
+                    player.ControlPuck(p);
+                    p.coll.enabled = false;
+                 }
+             } else {
+                if (!p.controlled) {
+                    player.AddToOrbit(p);
+                }
+             }
+
+            //Debug.Log(player.puck);
 
         }
+
 
 
     }

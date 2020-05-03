@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 6192575377199079882}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 16.12, y: 22.21, z: 194.39453}
-  m_LocalScale: {x: 10.602192, y: 10.602192, z: 10.602193}
+  m_LocalScale: {x: 13.787827, y: 13.787827, z: 13.7878275}
   m_Children:
   - {fileID: 6192575377271002668}
   - {fileID: 8535336744015227454}
@@ -53,7 +53,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -122,8 +122,10 @@ MonoBehaviour:
   sfx_bumperHit: {fileID: 8300000, guid: 3921d50ad5d6a4abda6e629ad1f1524d, type: 3}
   fx_hitparticle: {fileID: 7681600219343234529, guid: b309aeae686d24c429a1604ffe865eed,
     type: 3}
-  ringLight: {fileID: 801102212469662765, guid: 11373148626014f8f888414da13b7f2c,
+  fx_particles: {fileID: 7692700369022608290, guid: dc8ebde55108c40b39690083b3f6678f,
     type: 3}
+  ringLight: {fileID: 1085266624, guid: 11373148626014f8f888414da13b7f2c, type: 3}
+  mainLight: {fileID: 2604148075801198471}
 --- !u!1 &6192575377271002671
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,7 +175,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -230,7 +232,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7747553635089951496}
-  m_LocalRotation: {x: -0, y: -0, z: -0.08392532, w: 0.99647206}
+  m_LocalRotation: {x: -0, y: -0, z: -0.08494361, w: 0.99638575}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.09432012, y: 0.09432012, z: 0.09432011}
   m_Children: []
@@ -253,7 +255,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.542
   m_Color: {r: 1, g: 0.7971698, b: 0.906101, a: 1}
-  m_Intensity: 1
+  m_Intensity: 6.77
   m_LightVolumeOpacity: 0
   m_ApplyToSortingLayers: 00000000
   m_LightCookieSprite: {fileID: 0}
@@ -265,7 +267,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 6.09
-  m_PointLightOuterRadius: 17.15
+  m_PointLightOuterRadius: 19.18
   m_PointLightDistance: 3
   m_PointLightQuality: 1
   m_ShapeLightParametricSides: 5
@@ -291,6 +293,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light: {fileID: 0}
-  minIntensity: 0.8
-  maxIntensity: 1.2
-  smoothing: 47
+  minIntensity: 3
+  maxIntensity: 10
+  smoothing: 37

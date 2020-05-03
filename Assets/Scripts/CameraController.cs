@@ -31,8 +31,8 @@ public class CameraController : MonoBehaviour
     float zoomFactor = 5f;
     float followTimeDelta = 0.8f;
     Vector3 midpoint;
-    //midpoint = (t1.position + t2.position) / 2f;
-    midpoint = (t1.position + t2.position + t3.position) / 3f;
+    midpoint = (t1.position + t2.position) / 2f;
+    //midpoint = (t1.position + t2.position + t3.position) / 3f;
 
     // if (!Master.me.puck.controlled) {
     //     midpoint = (t1.position + t2.position + t3.position) / 3f;

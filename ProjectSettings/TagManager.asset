@@ -16,6 +16,7 @@ TagManager:
   - Bouncer
   - GoalChanger
   - Hole
+  - AngledBouncer
   layers:
   - Default
   - TransparentFX
@@ -29,7 +30,7 @@ TagManager:
   - Barrier
   - Player
   - Warp
-  - 
+  - Type
   - 
   - 
   - 

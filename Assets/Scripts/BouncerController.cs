@@ -10,6 +10,7 @@ public class BouncerController : MonoBehaviour
     Color defColor;
     public int controlledID;
     public Light2D hitLight;
+    public AudioClip SFX_hit;
     
     
     // Start is called before the first frame update
@@ -32,7 +33,12 @@ public class BouncerController : MonoBehaviour
     public void Hit(int id) {
         ChangeColor(Master.me.playerColors[id]);
         StartCoroutine(lightBurst(Master.me.playerColors[id]));
-        controlledID = id;
+        if (controlledID != id) {
+            controlledID = id;
+            SoundController.me.PlaySoundAtNormalPitch(SFX_hit, .8f, transform.position.x*.2f);
+        } else {
+            // play normal
+        }
         Master.me.CheckBouncers();
     }
 
@@ -48,6 +54,7 @@ public class BouncerController : MonoBehaviour
     IEnumerator lightBurst(Color c) {
         float duration = 30f;
         float maxIntensity = 3f;
+        float minIntensity = 1.5f;
         hitLight.color = c;
 
         // for(float i = 0f; i<duration/3f; i++) {
@@ -58,7 +65,7 @@ public class BouncerController : MonoBehaviour
         hitLight.intensity = maxIntensity;
 
         for(float i = 0; i<duration; i++) {
-            float desIntensity = Mathf.Lerp(maxIntensity, 0, i/duration);
+            float desIntensity = Mathf.Lerp(maxIntensity, minIntensity, i/duration);
             hitLight.intensity = desIntensity;
             yield return new WaitForSeconds(.001f);
         }

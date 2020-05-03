@@ -59,6 +59,12 @@ public class SoundController : MonoBehaviour {
 		PlaySound(a, vol);
 	}
 
+	public void PlayRandomSound(List<AudioClip> sfxList, float vol, float xPos) {
+		AudioClip a = sfxList[Random.Range(0, sfxList.Count)];		
+		Debug.Log("PLAYED SOUND?");
+		PlaySound(a, vol, 1f, xPos);
+	}
+
 
 	public void PlaySound(AudioClip snd, float vol)
 

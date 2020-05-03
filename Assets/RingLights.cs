@@ -12,12 +12,15 @@ public class RingLights : MonoBehaviour
     void Start()
     {
         Destroy(this.gameObject, lifetime);
-        spd += Random.Range(-.1f, .1f);
+        spd += Random.Range(-.05f, .1f);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (transform.localScale.x >= 100) {
+            Destroy(gameObject);
+        }
         transform.localScale*=spd;
     }
 }
