@@ -224,6 +224,7 @@ public class PlayerController : MonoBehaviour
 
         PuckController p = Instantiate(Master.me.puckObj, (Vector2)transform.position, /*+ sDir*/ Quaternion.identity).GetComponent<PuckController>();
         p.Start();
+        p.temp = true;
         AddToOrbit(p);
 
     }

@@ -308,7 +308,7 @@ MonoBehaviour:
   spd: 0
   baseSpd: 0.3
   maxSpd: 6
-  damping: 0.985
+  damping: 0.995
   controlled: 0
   playerControllingPuck: {fileID: 0}
   lastPlayerTouched: {fileID: 0}
@@ -324,6 +324,7 @@ MonoBehaviour:
   orbitObj: {fileID: 0}
   orbitting: 0
   ang: 0
+  temp: 0
 --- !u!50 &3789613715229179723
 Rigidbody2D:
   serializedVersion: 4

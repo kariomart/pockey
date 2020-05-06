@@ -43,6 +43,8 @@ public class PuckController : MonoBehaviour
     public bool orbitting;
     public float ang;
 
+    public bool temp;
+
 
 
 
@@ -273,6 +275,14 @@ public class PuckController : MonoBehaviour
     void OnTriggerEnter2D(Collider2D coll) {
 
         if (coll.gameObject.tag == "Goal") {
+            if (temp) {
+                if (lastPlayerTouched) {
+                    lastPlayerTouched.points += (int)(Master.me.livePoints*.5f);
+                }
+
+                Destroy(this.gameObject);
+            }
+
             GoalController g = coll.GetComponent<GoalController>();
             Debug.Log("scored!");
             Master.me.GoalScored(this, g);

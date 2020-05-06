@@ -295,10 +295,12 @@ public class Master : MonoBehaviour
         if (Random.value > .5f) {
             PuckController p = Instantiate(puckObj, new Vector2(0, 57), Quaternion.identity).GetComponent<PuckController>();
             p.Start();
+            p.temp = true;
             p.Shoot(Vector2.down, 5, true);
         } else {
             PuckController p = Instantiate(puckObj, new Vector2(0, -37), Quaternion.identity).GetComponent<PuckController>();
             p.Start();
+            p.temp = true;
             p.Shoot(Vector2.up, 5, true);
         }
 

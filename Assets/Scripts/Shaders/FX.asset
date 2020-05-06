@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2585c6ab0fec349748f8f04c4db5ba0a, type: 3}
   m_Name: RLProArtefacts
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa708a4c07b4f9e4abfa2c75cbbccccf, type: 3}
   m_Name: RLProPhosphor
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
