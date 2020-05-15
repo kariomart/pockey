@@ -48,6 +48,7 @@ public class BouncerController : MonoBehaviour
     }
 
     public void ChangeColor(Color c) {
+        Debug.Log(name);
         sprite.color = c;
     }
 

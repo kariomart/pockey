@@ -1275,7 +1275,7 @@ MonoBehaviour:
   - {fileID: 879305399}
   gameTime: 0
   periodLength: 60
-  randomPuckMode: 1
+  randomPuckMode: 0
 --- !u!4 &202935410
 Transform:
   m_ObjectHideFlags: 0
@@ -1305,6 +1305,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ZoomGate (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974037686514653910, guid: f405d419da2124bcf95b54998dccae04,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974037686514653912, guid: f405d419da2124bcf95b54998dccae04,
         type: 3}
@@ -3916,6 +3921,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bumper (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6192575377199079882, guid: 82c97dc65a3654577995255e3dae88f7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6192575377271002669, guid: 82c97dc65a3654577995255e3dae88f7,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -4559,7 +4569,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &537549737
 Transform:
   m_ObjectHideFlags: 0
@@ -4568,7 +4578,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 537549736}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -104.72702, y: 10, z: -699.5315}
+  m_LocalPosition: {x: -104.72702, y: -32, z: -699.5315}
   m_LocalScale: {x: 4.123988, y: 4.123988, z: 4.123988}
   m_Children:
   - {fileID: 355988252}
@@ -5059,6 +5069,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Bumper (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6192575377199079882, guid: 82c97dc65a3654577995255e3dae88f7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6192575377271002669, guid: 82c97dc65a3654577995255e3dae88f7,
         type: 3}
@@ -6316,6 +6331,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bumper2 (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 7033676691873472912, guid: 5ddaf0b368c8c4c2989e4daac66e2828,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7033676691873472918, guid: 5ddaf0b368c8c4c2989e4daac66e2828,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -6713,8 +6733,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 864679399}
   m_LocalRotation: {x: -0, y: -0, z: -0.70740384, w: 0.70680964}
-  m_LocalPosition: {x: -169.1, y: -269.39, z: 5.6582}
-  m_LocalScale: {x: 10.1684065, y: 10.3745, z: 8.784737}
+  m_LocalPosition: {x: -169.1, y: -269.26, z: 6.8872}
+  m_LocalScale: {x: 12.767451, y: 13.026222, z: 11.030115}
   m_Children: []
   m_Father: {fileID: 1985786930}
   m_RootOrder: 2
@@ -8855,8 +8875,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1283798331}
   m_LocalRotation: {x: -0, y: -0, z: -0.70740384, w: 0.70680964}
-  m_LocalPosition: {x: -168.93, y: -270.41, z: -3.9582}
-  m_LocalScale: {x: 10.1684065, y: 10.241599, z: 8.784737}
+  m_LocalPosition: {x: -168.89, y: -270.54, z: -5.1872}
+  m_LocalScale: {x: 12.767451, y: 12.859351, z: 11.030115}
   m_Children: []
   m_Father: {fileID: 1985786930}
   m_RootOrder: 1
@@ -9248,7 +9268,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1449591845
 Transform:
   m_ObjectHideFlags: 0
@@ -9314,7 +9334,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1474368829
 Transform:
   m_ObjectHideFlags: 0
@@ -9471,6 +9491,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZoomGate
       objectReference: {fileID: 0}
+    - target: {fileID: 5974037686514653910, guid: f405d419da2124bcf95b54998dccae04,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5974037686514653912, guid: f405d419da2124bcf95b54998dccae04,
         type: 3}
       propertyPath: m_SortingOrder
@@ -9620,6 +9645,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Bumper (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6192575377199079882, guid: 82c97dc65a3654577995255e3dae88f7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82c97dc65a3654577995255e3dae88f7, type: 3}
@@ -9999,12 +10029,12 @@ PrefabInstance:
     - target: {fileID: 6192575377199079881, guid: 82c97dc65a3654577995255e3dae88f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 36.199997
+      value: 12.7
       objectReference: {fileID: 0}
     - target: {fileID: 6192575377199079881, guid: 82c97dc65a3654577995255e3dae88f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -22.199997
+      value: 7.6
       objectReference: {fileID: 0}
     - target: {fileID: 6192575377199079881, guid: 82c97dc65a3654577995255e3dae88f7,
         type: 3}
@@ -10055,6 +10085,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Bumper
+      objectReference: {fileID: 0}
+    - target: {fileID: 6192575377199079882, guid: 82c97dc65a3654577995255e3dae88f7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82c97dc65a3654577995255e3dae88f7, type: 3}
@@ -10973,6 +11008,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bumper2 (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 7033676691873472912, guid: 5ddaf0b368c8c4c2989e4daac66e2828,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7033676691873472918, guid: 5ddaf0b368c8c4c2989e4daac66e2828,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -11515,6 +11555,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bumper2 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 7033676691873472912, guid: 5ddaf0b368c8c4c2989e4daac66e2828,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7033676691873472918, guid: 5ddaf0b368c8c4c2989e4daac66e2828,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -11763,7 +11808,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.66
+  m_Intensity: 2.55
   m_LightVolumeOpacity: 0
   m_ApplyToSortingLayers: 00000000
   m_LightCookieSprite: {fileID: 21300000, guid: 8d7da6c98de7d43178af0c130fcf11a1,
@@ -11797,8 +11842,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1927901214}
   m_LocalRotation: {x: -0, y: -0, z: 0.7070975, w: 0.7071162}
-  m_LocalPosition: {x: -169.36, y: -269.96, z: 0}
-  m_LocalScale: {x: 10.5785885, y: 10.5785885, z: 10.578591}
+  m_LocalPosition: {x: -169.43, y: -269.98, z: -0.21726}
+  m_LocalScale: {x: 13.282475, y: 13.282475, z: 13.282479}
   m_Children: []
   m_Father: {fileID: 1985786930}
   m_RootOrder: 5
@@ -12102,6 +12147,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Bumper2 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033676691873472912, guid: 5ddaf0b368c8c4c2989e4daac66e2828,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7033676691873472918, guid: 5ddaf0b368c8c4c2989e4daac66e2828,
         type: 3}
@@ -12437,7 +12487,7 @@ PrefabInstance:
     - target: {fileID: 4745463518998450263, guid: 63808e6d7b8dd415ab5ef6dcee0612ef,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4745463518998450264, guid: 63808e6d7b8dd415ab5ef6dcee0612ef,
         type: 3}

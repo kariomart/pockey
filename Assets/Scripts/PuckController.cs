@@ -127,7 +127,9 @@ public class PuckController : MonoBehaviour
     public void Shoot(Vector2 objDir, float shotSpeed) {
         aftertouchFrames = 0;
         controlled = false;
-        playerControllingPuck.hasPuck = false;
+        if (playerControllingPuck) {
+            playerControllingPuck.hasPuck = false;
+        }
         playerLastShot = playerControllingPuck;
         playerControllingPuck = null;
         vel = objDir;
@@ -268,8 +270,8 @@ public class PuckController : MonoBehaviour
     }
 
     public void UpdateLine() {
-        // line.SetPosition(0, reticle.transform.position);
-        // line.SetPosition(1, transform.position);
+        line.SetPosition(0, reticle.transform.position);
+        line.SetPosition(1, transform.position);
     }
 
     void OnTriggerEnter2D(Collider2D coll) {

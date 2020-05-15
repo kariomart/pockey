@@ -51,6 +51,8 @@ public class Master : MonoBehaviour
     public float gameTime;
     public float periodLength;
 
+    public bool randomPuckMode;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,6 +71,7 @@ public class Master : MonoBehaviour
         UpdateUI();
         defColor = bg.color;
         gameTime = periodLength;
+        //randomPuckMode = true;
     }
   
 
@@ -77,7 +80,7 @@ public class Master : MonoBehaviour
     {
 
         if (Input.GetKeyDown(KeyCode.Space)) {
-            //UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
+            randomPuckMode = !randomPuckMode;
         }
 
         // if (gameTime > 60) {
@@ -116,7 +119,7 @@ public class Master : MonoBehaviour
 
         int r = Random.Range(0, 1000);
 
-        if (r == 10) {
+        if (r == 10 && randomPuckMode) {
             SpawnRandomPuck();
         }
 
@@ -220,7 +223,7 @@ public class Master : MonoBehaviour
 
     public void ResetBouncers() {
         foreach (BouncerController b in bouncers) {
-            b.Reset();
+            //b.Reset();
         }
     }
 

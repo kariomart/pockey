@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
         SetColor(Master.me.playerColors[playerId]);
         coll = transform.GetChild(0).GetComponent<CircleCollider2D>();
         skateAudio = GetComponentInChildren<AudioSource>();
-        SpawnOrbitPuck();
+        //SpawnOrbitPuck();
 
         // PlayerTuning tuning = Resources.Load<PlayerTuning>("MyTune");
         // jerk = tuning.jerk;
