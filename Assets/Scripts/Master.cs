@@ -18,6 +18,7 @@ public class Master : MonoBehaviour
     public PlayerController[] players;
     public GoalController[] goals;
     public Color[] playerColors = new Color[4];
+    public Color[] puckColors = new Color[4];
     public Vector2[] spawnPos = new Vector2[2];
     public Vector2[] goalPos = new Vector2[2];
     public float goalSize;
@@ -25,6 +26,7 @@ public class Master : MonoBehaviour
     public int[] multiplier = new int[2];
     public GameObject spawnedBumpers;
     public PuckController puck;
+    public List<PuckController> pucks = new List<PuckController>();
     public Transform puckSpawn;
 
     public int livePoints;
@@ -52,6 +54,18 @@ public class Master : MonoBehaviour
     public float periodLength;
 
     public bool randomPuckMode;
+    public GameObject startMenu;
+    public bool gamePaused;
+
+    public bool gameOver;
+    public GameObject gameOverScreen;
+    public TextMeshProUGUI winnerText;
+    public Image winnerBg;
+    public AudioSource musicSource;
+    public AudioClip powerUp;
+    public AudioClip powerDown;
+    public AudioClip periodOver;
+    public AudioClip countdownSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -101,10 +115,26 @@ public class Master : MonoBehaviour
         string minutes = Mathf.Floor(gameTime / 60).ToString("0");
         string seconds = (gameTime % 60).ToString("00");
         timerUI.text = minutes + ":" + seconds;
+        if (gameTime % 1 <= .017 && gameTime < 5 && gameTime > 1 && !gameOver) {
+            SoundController.me.PlaySound(countdownSFX, 1f);
+        }   
 
         if (gameTime <= 0) {
             if (periodNum == 3) {
-                // do gameover stuff here
+                gameOver = true;
+                //Time.timeScale = 0;
+                gameOverScreen.SetActive(true);
+                PlayerController p;
+                if (players[0].points > players[1].points) {
+                    p = players[0];
+                    winnerText.text = "RED HAS WON";
+                } else {
+                    p = players[1];
+                    winnerText.text = "BLUE HAS WON";
+                }
+
+                winnerBg.color = p.color;
+
             } else {
                 NewPeriod();
             }
@@ -112,14 +142,15 @@ public class Master : MonoBehaviour
             
         }
 
+
         if (Input.GetKeyDown(KeyCode.Escape)) {
             //UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
             NewPeriod();
         }
 
-        int r = Random.Range(0, 1000);
-
-        if (r == 10 && randomPuckMode) {
+        int r = Random.Range(0, 2000);
+        r *= pucks.Count;
+        if (r == 10 && randomPuckMode && !gamePaused) {
             SpawnRandomPuck();
         }
 
@@ -141,11 +172,9 @@ public class Master : MonoBehaviour
 
         ResetBouncers();
         goalsScored++;
-        //Debug.Log(p.lastPlayerTouched.playerId + " " + g.playerId);
-        if (p.lastPlayerTouched) {
-            if (p.lastPlayerTouched.playerId == g.playerId) {
-                livePoints = (int)(livePoints*1.5f);
-            }
+
+        if (p.id == 1) {
+            livePoints*=2;
         }
 
         players[g.playerId].points+=livePoints;
@@ -174,17 +203,49 @@ public class Master : MonoBehaviour
     }
 
     public void NewPeriod() {
+        SoundController.me.PlaySound(periodOver, 1f);
         foreach(PlayerController p in players) {
             p.transform.position = spawnPos[p.playerId];
             p.Start();
+            for(int i = pucks.Count - 1; i > -1; i--) {
+                if (pucks[i]) {
+                    Destroy(pucks[i].gameObject);
+                }
+            }
+
+            pucks.Clear();
         }
 
+        
+        ResetBouncers();
         SpawnPuck();
         livePoints = 0;
         UpdateUI();
         gameTime = periodLength;
         periodNum++;
         
+    }
+
+     public void NewPeriod(int a) {
+        foreach(PlayerController p in players) {
+            p.transform.position = spawnPos[p.playerId];
+            p.Start();
+            for(int i = pucks.Count - 1; i > -1; i--) {
+                if (pucks[i]) {
+                    Destroy(pucks[i].gameObject);
+                }
+            }
+
+            pucks.Clear();
+        }
+
+        
+        ResetBouncers();
+        SpawnPuck();
+        livePoints = 0;
+        UpdateUI();
+        gameTime = periodLength;
+        PauseGame();
     }
     
 
@@ -223,21 +284,32 @@ public class Master : MonoBehaviour
 
     public void ResetBouncers() {
         foreach (BouncerController b in bouncers) {
-            //b.Reset();
+            b.Reset();
         }
+    }
+
+    public void PauseGame() {
+
+        if (!gamePaused) {
+            SoundController.me.PlaySound(powerUp, 1f);
+            startMenu.SetActive(true);
+            Time.timeScale = 0;
+            gamePaused = true;
+            musicSource.Pause();
+        } else {
+            startMenu.SetActive(false);
+            Time.timeScale = 1;
+            gamePaused = false;
+            SoundController.me.PlaySound(powerDown, 1f);
+            musicSource.Play();
+        }   
+
+
     }
 
    
 
-    IEnumerator ShootCoinFX(int amt, Vector2 pos) {
 
-        for (int i = 0; i < amt; i++)
-        {
-            CoinFX coin = Instantiate(coinFX, pos, Quaternion.identity).GetComponent<CoinFX>();   
-            coin.destination = Vector2.zero;
-            yield return new WaitForSeconds(.1f);
-        }
-    }
 
     IEnumerator FlashBackground(Color color, GoalController g) {
         //bg.color = color;
@@ -294,17 +366,37 @@ public class Master : MonoBehaviour
         return ply;
     }
 
+    public int ChoosePuckType() {
+        int r = Random.Range(0, 101);
+
+        if (r > 50) {
+            return 0;
+        } else if (r <= 5) {
+            return 1;
+        }
+        // } else if (r <= 20) {
+        //     return 2;
+        // } 
+        return 0;
+    }
+
     public void SpawnRandomPuck() {
         if (Random.value > .5f) {
             PuckController p = Instantiate(puckObj, new Vector2(0, 57), Quaternion.identity).GetComponent<PuckController>();
+            p.id = ChoosePuckType();
+            Debug.Log(p.id);
             p.Start();
             p.temp = true;
             p.Shoot(Vector2.down, 5, true);
+            pucks.Add(p);
         } else {
             PuckController p = Instantiate(puckObj, new Vector2(0, -37), Quaternion.identity).GetComponent<PuckController>();
+            p.id = ChoosePuckType();
+            Debug.Log(p.id);
             p.Start();
             p.temp = true;
             p.Shoot(Vector2.up, 5, true);
+            pucks.Add(p);
         }
 
     }
@@ -316,6 +408,7 @@ public class Master : MonoBehaviour
         players[id].flicking = true;
         Destroy(puck.gameObject);
         puck = p;
+        pucks.Add(p);
 
         puck.reticle.SetActive(true);
         puck.coll.enabled = false;
@@ -326,16 +419,20 @@ public class Master : MonoBehaviour
 
     void SpawnPuck(GoalController g, int id) {
 
-        puck = Instantiate(puckObj, g.puckSpawn.position, Quaternion.identity).GetComponent<PuckController>();
+        PuckController p = Instantiate(puckObj, g.puckSpawn.position, Quaternion.identity).GetComponent<PuckController>();
         if (g.playerId != 3) {
             players[1-g.playerId].flicking = true;
         } else {
             players[id].flicking = true;
         }
 
-        puck.Start();
-        puck.coll.enabled = false;
-        puck.reticle.SetActive(true);
+        p.Start();
+        p.coll.enabled = false;
+        p.justSpawned = true;
+        p.reticle.SetActive(true);
+        Debug.Log("added p");
+        pucks.Add(p);
+        puck = p;
         Camera.main.GetComponent<CameraController>().t3 = puck.transform;
     }
 
@@ -346,6 +443,8 @@ public class Master : MonoBehaviour
         puck = p;
         Destroy(pOld);
         StartCoroutine(PuckInvuln());
+        puck.justSpawned = true;
+        pucks.Add(p);
         Camera.main.GetComponent<CameraController>().t3 = puck.transform;
 
     }
@@ -386,8 +485,34 @@ public class Master : MonoBehaviour
             yield return new WaitForSeconds(.0001f);        
         }
 
-        coll.enabled = true;
+        if (coll) {
+            coll.enabled = true;
+            puck.justSpawned = false;
+        }
 
+    }
+
+    public float GetLargestDist(Vector2 pos) {
+        float d = 0;
+
+        foreach(PuckController p in pucks) {
+            if (p) {
+                if (!p.controlled) {
+                    float dis = Vector2.Distance(pos, p.transform.position);
+                    if (dis > d) {
+                        d = dis;
+                    }
+                }
+            } 
+        }
+
+        for(int i = pucks.Count - 1; i > -1; i--) {
+            if (pucks[i] == null) {
+                pucks.RemoveAt(i);
+            }
+        }
+
+        return d;
     }
 
     

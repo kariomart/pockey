@@ -50,6 +50,9 @@ public class BumperController : MonoBehaviour
 
     public void Hit(PuckController p) {
        // if (!controller && p.lastPlayerTouched) {
+           if (controller) {
+               controller.points++;
+           }
             controller = p.lastPlayerTouched;
         //} else {
           //  if (Random.value > .098f) {

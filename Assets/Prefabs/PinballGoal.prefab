@@ -87,7 +87,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -400,7 +400,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -678,17 +678,17 @@ PrefabInstance:
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
@@ -698,8 +698,13 @@ PrefabInstance:
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: m_Color.a
-      value: 0.6901961
+      value: 0.7176471
       objectReference: {fileID: 0}
+    - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: bb732470328784205bb072f4d2cb61f5, type: 2}
     - target: {fileID: 8636734943250279475, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: playerId
@@ -723,7 +728,7 @@ PrefabInstance:
     - target: {fileID: 8636734943250279475, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: flapDuration
-      value: 15
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aec36a9c5c3c47e68d31c3df34786ac, type: 3}
@@ -838,17 +843,17 @@ PrefabInstance:
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
@@ -858,8 +863,13 @@ PrefabInstance:
     - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: m_Color.a
-      value: 0.6901961
+      value: 0.7176471
       objectReference: {fileID: 0}
+    - target: {fileID: 8636734943250279474, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: bb732470328784205bb072f4d2cb61f5, type: 2}
     - target: {fileID: 8636734943250279475, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: playerId
@@ -883,7 +893,7 @@ PrefabInstance:
     - target: {fileID: 8636734943250279475, guid: 5aec36a9c5c3c47e68d31c3df34786ac,
         type: 3}
       propertyPath: flapDuration
-      value: 15
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aec36a9c5c3c47e68d31c3df34786ac, type: 3}

@@ -36,16 +36,22 @@ public class StickController : MonoBehaviour
         
         if (coll.gameObject.tag == "Puck") {
             PuckController p = coll.gameObject.GetComponent<PuckController>();
-             if (player.puck == null ) {
+             if (player.puck == null) {
                  if (player.CanShoot()) {
+                    Debug.Log("!");
                     p.Control(endOfStick.transform, player);
                     p.playerControllingPuck = player;
                     player.ControlPuck(p);
+                    p.UpdatePuckColor();
                     p.coll.enabled = false;
                  }
              } else {
                 if (!p.controlled) {
-                    player.AddToOrbit(p);
+                    if (!p.justShot) {
+                        player.AddToOrbit(p);   
+                    } else {
+                        p.justShot = false;
+                    }
                 }
              }
 

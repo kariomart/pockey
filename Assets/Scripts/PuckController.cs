@@ -45,7 +45,11 @@ public class PuckController : MonoBehaviour
 
     public bool temp;
 
+    public bool justShot;
+    public bool justSpawned;
 
+    public int id;
+    public float lifetime;
 
 
     // Start is called before the first frame update
@@ -57,6 +61,7 @@ public class PuckController : MonoBehaviour
         trail = GetComponentInChildren<ParticleSystem>();
         line = GetComponentInChildren<LineRenderer>();
         ps = transform.GetChild(0).transform.GetChild(0).GetComponent<ParticleSystem>();
+        UpdatePuckColor();
     }
 
     // Update is called once per frame
@@ -75,18 +80,19 @@ public class PuckController : MonoBehaviour
         //vel.Normalize();
         collTime ++;
         bounceTimer++;
+
         if (bounceTimer > 180f) {
             bounceIndex = Random.Range(0, SoundController.me.sfx_wallHits.Count);
         }
 
-        if (!orbitting && collTime > 3 && !controlled && coll.enabled == false) {
+        if (!orbitting && collTime > 3 && !controlled && coll.enabled == false && !justSpawned) {
+            Debug.Log("!");
             coll.enabled = true;
         }
 
         if (orbitting) {
             Orbit();
         }
-
        
     }
 
@@ -161,7 +167,7 @@ public class PuckController : MonoBehaviour
         controlled = true;
         UpdatePuckColor();
         coll.enabled = false;
-        spr.enabled = false;
+        //spr.enabled = false;
         trail.Stop();
     }
 
@@ -192,9 +198,10 @@ public class PuckController : MonoBehaviour
 
         else if (coll.gameObject.tag == "Player") {
             PlayerController p = coll.gameObject.GetComponent<PlayerController>();
+            if (id == 2) {
+                StartCoroutine(p.Stunned(2f));
+            }
             if (playerLastShot != p || collTime > collTimer) {
-                //vel = Geo.ReflectVect (vel.normalized, coll.contacts [0].normal) * (vel.magnitude * 0.8f);
-                //lastPlayerTouched = coll.gameObject.GetComponent<PlayerController>();
                 UpdatePuckColor();
             }
         }
@@ -252,16 +259,26 @@ public class PuckController : MonoBehaviour
     }
 
     public void UpdatePuckColor() {
-        if (lastPlayerTouched) {
-            ChangeColor(Master.me.playerColors[lastPlayerTouched.playerId]);
+        if (id == 0) {
+            if (lastPlayerTouched) {
+                ChangeColor(Master.me.playerColors[lastPlayerTouched.playerId]);
+            } else {
+                ChangeColor(Color.white);
+            }
         } else {
-            ChangeColor(Color.white);
+            Debug.Log("ID: " + id);
+            Color c = Master.me.puckColors[id];
+            Debug.Log(c);
+            spr.color = c;
+            ps.startColor = new Color(c.r, c.g, c.b, .5f);
         }
     }
 
     public void ChangeColor(Color c) {
-        spr.color = c;
-        ps.startColor = new Color(c.r, c.g, c.b, .5f);
+        if (id == 0) {
+            spr.color = c;
+            ps.startColor = new Color(c.r, c.g, c.b, .5f);
+        }
     }
 
     public void UpdateAlpha(float a) {
@@ -288,8 +305,8 @@ public class PuckController : MonoBehaviour
             GoalController g = coll.GetComponent<GoalController>();
             Debug.Log("scored!");
             Master.me.GoalScored(this, g);
-            Master.me.players[0].hasPuck = false;
-            Master.me.players[1].hasPuck = false;
+            //Master.me.players[0].hasPuck = false;
+            //Master.me.players[1].hasPuck = false;
             Destroy(this.gameObject);
             trail.Stop();
         }

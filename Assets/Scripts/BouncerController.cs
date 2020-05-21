@@ -31,6 +31,7 @@ public class BouncerController : MonoBehaviour
     }
 
     public void Hit(int id) {
+        Master.me.players[id].points ++;
         ChangeColor(Master.me.playerColors[id]);
         StartCoroutine(lightBurst(Master.me.playerColors[id]));
         if (controlledID != id) {
@@ -48,7 +49,7 @@ public class BouncerController : MonoBehaviour
     }
 
     public void ChangeColor(Color c) {
-        Debug.Log(name);
+        //Debug.Log(name);
         sprite.color = c;
     }
 

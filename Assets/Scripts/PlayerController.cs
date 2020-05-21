@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     public float flickSpd;
     public PuckController puck;
     public bool shooting;
-    int framesSinceShot = 11;
+    public int framesSinceShot = 11;
     int shotTimer = 15;
     public float shootSpd;
     public float maxShootSpd;
@@ -43,6 +43,9 @@ public class PlayerController : MonoBehaviour
 
     public AudioClip sfx_shoot;
     public AudioClip sfx_orbitShoot;
+    public AudioClip sfx_loaded;
+    public AudioClip sfx_orbitted;
+    public AudioClip sfx_collided;
     public AudioSource skateAudio;
 
     public GameObject vfx_ice;
@@ -61,16 +64,22 @@ public class PlayerController : MonoBehaviour
 
     public List<PuckController> orbittingPucks = new List<PuckController>();
 
+    public Transform stick;
+
+    public bool stunned;
+
 
     // Start is called before the first frame update
     public void Start()
     {
+        flicking = false;
         rewiredPlayer = ReInput.players.GetPlayer(playerId);
         rb = GetComponent<Rigidbody2D>();
         spr = transform.GetChild(0).GetComponent<SpriteRenderer>();
         SetColor(Master.me.playerColors[playerId]);
         coll = transform.GetChild(0).GetComponent<CircleCollider2D>();
         skateAudio = GetComponentInChildren<AudioSource>();
+        vel = Vector2.zero;
         //SpawnOrbitPuck();
 
         // PlayerTuning tuning = Resources.Load<PlayerTuning>("MyTune");
@@ -87,10 +96,20 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
-        if (rewiredPlayer.GetButtonDown("Restart")) {
+        if (Input.anyKeyDown && Master.me.gameOver) {
             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
             Time.timeScale = 1;
         }
+
+         if (rewiredPlayer.GetButtonDown("UICancel") && Master.me.gamePaused) {
+            Master.me.PauseGame();
+        }
+
+        if (rewiredPlayer.GetButtonDown("Start")) {
+            Master.me.PauseGame();
+        }
+
+
         lStickDir = new Vector2(rewiredPlayer.GetAxis("Move Horizontal"), rewiredPlayer.GetAxis("Move Vertical"));
 
         if (rewiredPlayer.GetButton("Swing")) {
@@ -120,12 +139,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (rewiredPlayer.GetButtonDown("ReleasePuck")) {
-            ReleasePuck();
-        }
-
-        if (rewiredPlayer.GetButtonUp("Select")) {
-            //PauseGame();
-            //bring up menu
+            //ReleasePuck();
         }
 
         if (rewiredPlayer.GetButtonDown("Call Puck")) {
@@ -162,12 +176,12 @@ public class PlayerController : MonoBehaviour
 
         framesSinceShot ++;
         framesSinceDash ++;
-        SkateAudio();
+        //SkateAudio();
         FlickPuck();
 
         float dot = Vector2.Dot(lStickDir.normalized, lastStickDir);
         if (dot < .97f && dot != 0) {
-            Instantiate(vfx_ice, transform.position, Quaternion.identity);
+            //Instantiate(vfx_ice, transform.position, Quaternion.identity);
         }
 
         Vector2 moveDir = lStickDir.normalized; 
@@ -179,13 +193,14 @@ public class PlayerController : MonoBehaviour
             lastStickDir = moveDir;
             reticle.transform.position = (Vector2)transform.position+moveDir*(transform.lossyScale.x * .8f);
             head.transform.position = (Vector2)transform.position+moveDir*.9f;
+            head.transform.position = new Vector3(head.transform.position.x, head.transform.position.y, -2f);
             //transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(lStickDir) - 90);
             transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Geo.ToAng(vel) - 90);
         } else {
             speed -= deaccel;
             speed = Mathf.Clamp(speed, 0, maxSpeed);
             reticle.transform.position = (Vector2)transform.position + lastStickDir*(transform.lossyScale.x * .8f);
-            head.transform.position = (Vector2)transform.position + lastStickDir*.9f;
+            head.transform.position = new Vector3(head.transform.position.x, head.transform.position.y, -2f);
 
         }
 
@@ -201,7 +216,7 @@ public class PlayerController : MonoBehaviour
             vel *= .85f;
         }
 
-        if (!flicking) {
+        if (!flicking && !stunned) {
             rb.MovePosition((Vector2)transform.position + vel);
         }
         if (Master.me.goaliesEnabled) {
@@ -233,6 +248,7 @@ public class PlayerController : MonoBehaviour
         p.UpdateAlpha(1-(.3f*orbittingPucks.Count));
         p.coll.enabled = false;
         orbittingPucks.Add(p);
+        SoundController.me.PlaySoundAtNormalPitch(sfx_orbitted, .5f, transform.position.x);
         p.StartOrbit(this);
     }
 
@@ -270,6 +286,7 @@ public class PlayerController : MonoBehaviour
             framesSinceShot = 0;
             puck.lastPlayerTouched = this;
             puck.playerLastShot = this;
+            puck.justShot = true;
             puck = null;
             reticle.SetActive(false);
             SetColor(new Color(spr.color.r, spr.color.g, spr.color.b, 1f));
@@ -278,15 +295,32 @@ public class PlayerController : MonoBehaviour
             Transform t = Instantiate(FX_ShotPuck, (Vector2)transform.position + (dir * 4f), Quaternion.Euler(new Vector3(360 - ang, 90, 0))).transform;
             ParticleSystem.MainModule p = t.gameObject.GetComponent<ParticleSystem>().main;
             p.startColor = new ParticleSystem.MinMaxGradient(Color.red, color);
-
             Transform t1 = Instantiate(FX_MuzzleFlash, (Vector2)transform.position + (dir * 2f), Quaternion.Euler(new Vector3(360 - ang, 90, 0))).transform;
+            LoadPuck();
             //t.localEulerAngles = new Vector3(rotDir-180,0,0);
 
         }
     }
 
+    public void LoadPuck() {
+        if (orbittingPucks.Count > 0) {
+            Debug.Log("!");
+            PuckController p = orbittingPucks[0];
+            hasPuck = true;
+            orbittingPucks.Remove(p);
+            p.orbitting = false;
+            Debug.Log("loaded");
+            p.Control(stick, this);
+            LoadFromOrbit(p);
+            p.coll.enabled = false;
+            SoundController.me.PlaySoundAtNormalPitch(sfx_loaded, .5f, transform.position.x);
+        }
+    }
+
     public void ControlPuck(PuckController p) {
         if (framesSinceShot > shotTimer) {
+            Debug.Log("controlled");
+            SoundController.me.PlaySoundAtNormalPitch(sfx_loaded, .5f, transform.position.x);
             p.playerControllingPuck = this;
             hasPuck = true;
             puck = p;
@@ -294,11 +328,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void LoadFromOrbit(PuckController p) {
+        p.playerControllingPuck = this;
+        hasPuck = true;
+        puck = p;
+        reticle.SetActive(true);
+    }
+
     public void DropPuck() {
         hasPuck = false;
         puck.controlled = false;
         puck.lastPlayerTouched = this;
         puck = null;
+        LoadPuck();
     }
 
     public bool CanShoot() {
@@ -322,6 +364,7 @@ public class PlayerController : MonoBehaviour
             if (startedFlick && lStickDir == Vector2.zero) {
                 Master.me.puck.reticle.SetActive(false);
                 coll.enabled = true;
+                Master.me.puck.justSpawned = false;
                 SoundController.me.PlayRandomSound(SoundController.me.sfx_shots);
                 flicked = false;
                 flicking = false;
@@ -365,6 +408,7 @@ public class PlayerController : MonoBehaviour
 
         else if (coll.gameObject.tag == "Player") {
             PlayerController p = coll.gameObject.GetComponent<PlayerController>();
+            SoundController.me.PlaySoundAtNormalPitch(sfx_collided, .8f, transform.position.x);
             if (puck && p.vel.magnitude > 0.08f) {
                 framesSinceShot = 0;
                 Debug.Log("smashed");
@@ -414,6 +458,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+    }
+
+    public IEnumerator Stunned(float time) {
+        stunned = true;
+        yield return new WaitForSeconds(time);
+        stunned = false;
     }
 
     public void OnTriggerEnter2D(Collider2D coll) {
