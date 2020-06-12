@@ -49,6 +49,14 @@ public class SetResolutions : MonoBehaviour {
 		//resolutionDropdown.Select(); 
 	}
 
+	public void ChangeController1() {
+		Master.me.NextController(0);
+	}
+
+	public void ChangeController2() {
+		Master.me.NextController(1);
+	}
+
 	public void ChangeResolution() {
 		resValue ++;
 		resValue %= resolutions.Length;
@@ -81,7 +89,7 @@ public class SetResolutions : MonoBehaviour {
         periodIndex%=periodVals.Length;
 		periodVal = periodVals[periodIndex];
 		Master.me.periodLength = periodVal;
-        periodValText.text = "PERIOD\t" + periodVal + "\t\t\t53524" + "\t\t\tSM2098";
+        periodValText.text = "PERIOD\t" + periodVal + "\t\t\t53524" + "\t\t\tSM2097";
 
 	}
 

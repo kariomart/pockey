@@ -98,14 +98,14 @@ MonoBehaviour:
     _negativeName: 
     _elementType: 1
     _compoundElementType: 0
-  - _id: 13
-    _name: Menu
+  - _id: 14
+    _name: Options
     _positiveName: 
     _negativeName: 
     _elementType: 1
     _compoundElementType: 0
-  - _id: 14
-    _name: Options
+  - _id: 13
+    _name: Menu
     _positiveName: 
     _negativeName: 
     _elementType: 1
@@ -436,7 +436,7 @@ MonoBehaviour:
           _isPressureSensitive: 0
       - customCalculation: {fileID: 0}
         customCalculationSourceData: []
-        elementIdentifier: 13
+        elementIdentifier: 14
         sourceType: 0
         sourceButton: 8
         sourceAxis: 0
@@ -454,7 +454,7 @@ MonoBehaviour:
           _isPressureSensitive: 0
       - customCalculation: {fileID: 0}
         customCalculationSourceData: []
-        elementIdentifier: 14
+        elementIdentifier: 13
         sourceType: 0
         sourceButton: 9
         sourceAxis: 0
@@ -906,7 +906,7 @@ MonoBehaviour:
         sourceOtherAxis: 0
       - customCalculation: {fileID: 0}
         customCalculationSourceData: []
-        elementIdentifier: 13
+        elementIdentifier: 14
         sourceType: 0
         sourceButton: 8
         sourceAxis: 0
@@ -925,7 +925,7 @@ MonoBehaviour:
         sourceOtherAxis: 0
       - customCalculation: {fileID: 0}
         customCalculationSourceData: []
-        elementIdentifier: 14
+        elementIdentifier: 13
         sourceType: 0
         sourceButton: 9
         sourceAxis: 0
@@ -1385,7 +1385,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 13
+      - elementIdentifier: 14
         sourceType: 0
         sourceButton: 6
         sourceStick: 0
@@ -1403,7 +1403,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 14
+      - elementIdentifier: 13
         sourceType: 0
         sourceButton: 7
         sourceStick: 0
@@ -1822,7 +1822,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 13
+      - elementIdentifier: 14
         sourceType: 0
         sourceButton: 6
         sourceAxis: 0
@@ -1838,7 +1838,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 14
+      - elementIdentifier: 13
         sourceType: 0
         sourceButton: 7
         sourceAxis: 0
@@ -2234,7 +2234,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 13
+      - elementIdentifier: 14
         sourceType: 0
         sourceButton: 8
         sourceAxis: 0
@@ -2250,7 +2250,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 14
+      - elementIdentifier: 13
         sourceType: 0
         sourceButton: 9
         sourceAxis: 0
@@ -2703,7 +2703,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 13
+      - elementIdentifier: 14
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
@@ -2727,7 +2727,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 14
+      - elementIdentifier: 13
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
@@ -3280,11 +3280,11 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 13
+      - elementIdentifier: 14
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
-        sourceButton: 7
+        sourceButton: 6
         sourceKeyCode: 0
         customCalculation: {fileID: 0}
         customCalculationSourceData: []
@@ -3304,11 +3304,11 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 14
+      - elementIdentifier: 13
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
-        sourceButton: 6
+        sourceButton: 7
         sourceKeyCode: 0
         customCalculation: {fileID: 0}
         customCalculationSourceData: []
@@ -3829,7 +3829,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 13
+      - elementIdentifier: 14
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
@@ -3853,7 +3853,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 14
+      - elementIdentifier: 13
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
@@ -4398,7 +4398,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 13
+      - elementIdentifier: 14
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
@@ -4422,7 +4422,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 14
+      - elementIdentifier: 13
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
@@ -5165,7 +5165,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 13
+      - elementIdentifier: 14
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0
@@ -5180,7 +5180,7 @@ MonoBehaviour:
         buttonInfo:
           _excludeFromPolling: 0
           _isPressureSensitive: 0
-      - elementIdentifier: 14
+      - elementIdentifier: 13
         sourceType: 0
         sourceAxis: 0
         axisDeadZone: 0

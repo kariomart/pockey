@@ -160,7 +160,7 @@
     <h3><a name="overview" id="overview"></a>Overview</h3>
 <p>This is an EventSystem input module component that can be used in place of Unity's StandaloneInputModule. The purpose of this module is to allow Rewired to control navigation of Unity's UI instead of the default UnityEngine.Input.</p>
     <p>When you install or upgrade Rewired, it will automatically install the RewiredStandaloneInputModule.cs file in the Rewired/Integration/UnityUI folder provided you are running Unity 4.6 or greater.</p>
-    <p>This component must be added to the EventSystem in the scene and the default StandaloneInputModule must be disabled or removed. This will allow the UnityUI system to receive input from Rewired. You must also create the appropriate Actions in the Rewired Editor to match the Actions listed in the RewiredStandaloneInputModule and assign these Actions to one or more Controller Maps then assign those to one or more Players.</p>
+    <p>This component must be added to the Event System in the scene and the default StandaloneInputModule must be disabled or removed. This will allow the UnityUI system to receive input from Rewired. You must also create the appropriate Actions in the Rewired Editor to match the Actions listed in the RewiredStandaloneInputModule and assign these Actions to one or more Controller Maps then assign those to one or more Players.</p>
     <p>&nbsp;</p>
     <hr />
     <h3><a name="quick-setup" id="quick-setup"></a>Quick Setup</h3>
@@ -184,7 +184,8 @@
       <li>GameObject -&gt; Create Other -&gt; Rewired -&gt; UI -&gt; Rewired Event System</li>
       <li>Window -&gt; Rewired -&gt; Create -&gt; UI -&gt; Rewired Event System    </li>
       </ul>
-    <p>&nbsp;</p>
+    <p>Rewired also comes with the RewiredEventSystem component which has the additional option to allow multiple Event Systems to run in the scene at the same time. This can be useful if you want to create  <a href="#faq-multiple-independent-uis">multiple independent UI's</a> for different Players.</p>
+<p>&nbsp;</p>
 <hr />
 <h3><a name="rewired-actions" id="rewired-actions"></a>Rewired Actions</h3>
     <p><img src="files/images/rewiredstandaloneinputmodule_inspector_actions.png" class="right" />Four Actions must be set up in the Rewired Input Manager and the RewiredStandaloneInputModule in order to control the UI with a keyboard or joystick. <strong>These four Actions must have names that match exactly in both the Rewired Input Manager and the RewiredStandaloneInputModule</strong>.</p>
@@ -375,13 +376,16 @@ void SetSelected(GameObject selectableObject) {
     <hr />
     <h3><a name="faq" id="faq"></a>FAQ:</h3>
     <p class="question">Does it support multi-player UIs?</p>
-    <p>Only partially through the use of <a href="#player-mouse">Player Mouse pointers</a>.</p>
-    <p>It does not support multi-player UI navigation using the Unity UI Selectable system. (The system used for joystick/keyboard navigation.)</p>
+    <p>Only partially through the use of <a href="#player-mouse">Player Mouse pointers</a> or by creating a separate independent UI for each Player.</p>
+    <p>It does not support shared multi-player UI navigation using the Unity UI Selectable system. (The system used for joystick/keyboard navigation.)</p>
     <p>The issue here is Unity's   UI controls and Event System do not support more 
       than one simultaneous &quot;selected&quot;   object. Their entire system is designed 
       around the concept of one single   user and one selection at a time. The Rewired Standalone Input Module cannot overcome the inherent limitations of Unity's UI system. Supporting multiple   simultaneous Selectables would require a complete 
-      rewrite of Unity's  Event System and all interactable UI components including Button, Toggle, Slider, etc., and their base classes with new versions that are multi-pointer aware including a new highlighting/transition system. This is outside the scope of Rewired, which is an input system and not a replacement UI system.<br />
-  </p>
+      rewrite of Unity's  Event System and all interactable UI components including Button, Toggle, Slider, etc., and their base classes with new versions that are multi-pointer aware including a new highlighting/transition system. This is outside the scope of Rewired, which is an input system and not a replacement UI system.</p>
+    <p><a name="faq-multiple-independent-uis" id="faq-multiple-independent-uis"></a>Multiple Independent UI's</p>
+    <p>You can, however, create multiple independent UI's for each Player by creating multiple Rewired Event Systems and enabling Always Update on each Rewired Event System in the inspector. Each event system will have its own Rewired Standalone Input Module with its own settings. Each event system will have its own selectable controllable by the Players designated to control it in the Rewired Standalone Input Module.</p>
+    <p>You must take care when working with mouse input. If you allow mouse input to control multiple event systems, clicking on a Selectable object with the mouse will cause all event systems to select that same GameObject. This is unlikely to be desirable, so you need to manage which event systems are allowed mouse control. This can be done by disabling mouse input on all but one event system or by using Player Mouse to handle mouse input on all event systems and designating only one Player Mouse to use the hardware pointer position.<br />
+    </p>
 <div class="bottom-pager clearfix">
   <a class="back-button" href="Actions.html" title="Actions"><span class="button-img"></span></a><a class="back-button" href="Documentation.html" title="Actions">Documentation</a></div>
 <!-- InstanceEndEditable -->

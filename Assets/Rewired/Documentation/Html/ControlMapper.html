@@ -146,6 +146,7 @@
 
     <ul>
       <li><a href="#overview">Overview</a></li>
+      <li><a href="#installation">Installation</a></li>
       <li><a href="#setup">Setup</a>
         <ul>
           <li><a href="#rewiredstandaloneinputmodule">Rewired Standalone Input Module</a></li>
@@ -186,7 +187,26 @@
     <p>&nbsp;</p>
     <p>The information that follows assumes you are familiar with working with input in Rewired. If you are not, read through the <a href="Documentation.html">documentation</a> first. Step by step basics of how to use Rewired will not be covered here.</p>
     <p>Control Mapper files including examples can be found in the Rewired/Extras/ControlMapper folder.</p>
-    <h3>&nbsp;</h3>
+    <p>&nbsp;</p>
+    <hr />
+    <h2><a name="installation" id="installation"></a>Installation</h2>
+    <p>Control Mapper can be installed during installation of Rewired or at any time from the menu. To install Control Mapper from the menu:</p>
+    <ul>
+      <li>Window -&gt; Rewired -&gt; Extras -&gt; Control Mapper -&gt; Install (Standard)</li>
+      <li>Window -&gt; Rewired -&gt; Extras -&gt; Control Mapper -&gt; Install (Text Mesh Pro)</li>
+  </ul>
+    <p> Control Mapper comes in two varieties:</p>
+    <ul>
+      <li>Standard - uses Unity UI Text components for text.</li>
+      <li>Text Mesh Pro - uses Text Mesh Pro for text.</li>
+      </ul>
+    <p>The Text Mesh Pro version requires Unity 2018.1+. Text Mesh Pro must be installed from the Package Manager and the Text Mesh Pro Essential Resources pack must be installed before installing Control Mapper.</p>
+    <p>Only one version can be installed in the project at a time.</p>
+    <h3>Important</h3>
+    <p>If you have an existing Control Mapper setup, you will not be able to easily migrate to a different version of Control Mapper because your copy will not automatically inherit all the changes required to work. The Text Mesh Pro version uses different text components than the Unity UI version, and all the object references to text components will be lost when switching between versions. The best way to switch from Standard to the Text Mesh Pro version is to rebuild your setup using the Text Mesh Pro version.</p>
+<h3>Uninstalling</h3>
+    <p>Delete the Rewired/Extras/ControlMapper folder.</p>
+<p>&nbsp;</p>
 <hr />
     <h2><a name="setup" id="setup"></a>Setup</h2>
     <p>The Control Mapper is a prefab which you can drag into your scene and use. This prefab includes the Canvas which will be used to render the UI elements.</p>
@@ -304,7 +324,21 @@
     </ol>
     <p><strong>Editing the language:</strong></p>
     <p>Edit the language file in the inspector. There is no user-friendly inspector for this language editing process, but the names of the fields should be self-explanatory. Make your changes and they will show up when you launch the game. (Language setting changes can not be viewed in real-time in the editor.)</p>
-    <p>&nbsp;</p>
+    <p><strong>Translating strings of Rewired objects (Players, Actions, Controller names, Controller elements, etc.):</strong><strong>ADVANCED USERS ONLY</strong></p>
+    <p>Do not attempt to do this if you are inexperienced at C# or are a beginner with Unity. This is an unsupported feature and step-by-step guidance will not be provided.</p>
+    <p>Rewired does not presently have a localization system built in where all strings in the system can be translated into different languages. Because I have been asked numerous times about how to translate these strings when using Control Mapper, I have added an interim translation framework to Control Mapper for you to be able to translate these items when displayed through the Control Mapper interface. If at some point in the future a core localization system is developed, this Control Mapper translation of these elements is likely to become obsolete.</p>
+    <p>The LanguageData class provides framework for translating all the Rewired elements, but it does not provide a way to store the translation data. You will have to provide that part in an extended class. LanguageData merely provides an interface for Control Mapper to call into for all strings.</p>
+    <p>In order to implement translation of these elements, you will have to override the LanguageDataBase class and extend it in order to plug in your translation and override each function pertaining to translation of Rewired core item names. Copy LanguageData.cs to a location outside the Rewired folder hierarchy, rename it to something else, change the class name to match, and modify all the functions below the line that reads &quot;// Translation of Rewired core items&quot; to translate the elements you want to translate using whatever lookup system you have set up for that. You will then have to <a href="https://docs.unity3d.com/ScriptReference/ScriptableObject.CreateInstance.html">make a ScriptableObject instance</a> of your new extended class, then attach that to Control Mapper in the inspector so it uses it instead of the default language object.</p>
+    <p>Relevant topics:</p>
+    <ul>
+      <li> <a href="HowTos.html#identifying-recognized-controllers">Idenfying recognized joysticks</a><a href="HowTos.html#identifying-recognized-controllers"><br />
+      </a></li>
+      <li><a href="http://guavaman.com/rewired/files/docs/RewiredControllersCSV.zip">CSV file of Joysticks</a></li>
+      <li><a href="http://guavaman.com/rewired/files/docs/RewiredControllerElementIdentifiersCSV.zip">CSV file of Joystick elements</a></li>
+      <li><a href="http://guavaman.com/rewired/files/docs/RewiredKeyboardElementIdentifiersCSV.zip">CSV file of Keyboard elements</a></li>
+      <li><a href="http://guavaman.com/rewired/files/docs/RewiredMouseElementIdentifiersCSV.zip">CSV file of Mouse elements</a></li>
+    </ul>
+<p>&nbsp;</p>
     <hr />
     <h2><a name="misc-notes" id="misc-notes"></a>Misc Notes</h2>
     <p><strong>Other UI Selectables outside or behind Control Mapper</strong></p>

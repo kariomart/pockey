@@ -152,6 +152,8 @@
     </ul>
     <h3><a href="#windows">Windows:</a></h3>
     <ul>
+      <li><a href="#windows-10-second-stall">Windows Standalone: Extra 10 second stall when pressing Play in the Unity editor and when running a build</a></li>
+      <li><a href="#windows-standalone-il2cpp-vs2019-hang">Windows Standalone, IL2CPP: Builds never finish or built exe hangs at launch</a></li>
       <li><a href="#windows-standalone-il2cpp">Windows Standalone, IL2CPP: Rewired falls back to Unity input</a></li>
       <li><a href="#windows-directinput-joysticks-not-detected-net46">Windows Standalone, Direct Input: Joysticks not detected when using .Net 4.6 scripting backend</a></li>
       <li><a href="#windows-editor-oculus-touch-crash">Windows Editor: Crash in Unity 5.6+ with Oculus Touch</a></li>
@@ -194,7 +196,7 @@
   <li><a href="#editor-recompile-after-finished-playing">Rewired stops working when changing scripts in Play mode with &quot;Recompile After Finished Playing&quot; option</a></li>
   <li><a href="#control-mapper-compiler-error-unity-2019-1-5f1">Compiler error in Unity 2019.1.5f1 when Control Mapper installed</a></li>
   <li><a href="#assembly-errors-2019-2">Assembly errors in projects upgraded to Unity 2019.2</a></li>
-  <li><a href="#assembly-errors-2019-3-alpha-beta">Assembly errors in Unity 2019.3 alpha/beta</a></li>
+  <li><a href="#assembly-errors-2019-3-alpha-beta">Assembly and build errors in Unity 2019.3 alpha/beta</a></li>
   <li><a href="#increased-compile-play-time-editor">Rewired increases compile time and load time after pressing Play in the editor</a></li>
       <li><a href="#serialized-data-corruption-after-import">Serialized data corruption after importing Rewired</a></li>
       <li><a href="#serialized-data-corruption-after-upgrading-unity">Serialized data corruption after upgrading Unity</a></li>
@@ -208,8 +210,13 @@
       <li><a href="#android-remotes">Remotes are not detected (Nexus Player, Amazon Fire TV, Razer Forge TV, etc.)</a></li>
       <li><a href="#android-unity-joystick-bugs-v5_5">Joysticks do not sent connect/disconnect events, multiple joysticks appear when the same joystick is unplugged and re-plugged</a></li>
       <li><a href="#android-il2cpp-ndk-compiler-bug">IL2CPP: Editor crashes or takes a very long time to compile or stalls forever</a></li>
+      </ul>
+    <h3><a href="ios-tvos">iOS/tvOS:</a></h3>
+    <ul>
+      <li><a href="#ios-tvos-pause-menu-dont-work">Gamepad Pause button and Siri Remote Menu button don't work</a></li>
+      <li><a href="#ios-tvos-13-gamepad-left-stick-x-not-working">iOS/tvOS 13: Gamepad left stick X doesn't work</a></li>
     </ul>
-    <h3><a href="xbox-one">Xbox One:</a></h3>
+<h3><a href="xbox-one">Xbox One:</a></h3>
     <ul>
       <li><a href="#xbox-one-controller-connections-error">Controller connections and disconnections do not work</a></li>
     </ul>
@@ -248,6 +255,18 @@
 <p>&nbsp;</p>
 <h2><a name="windows" id="windows"></a>Windows</h2>
 <p>&nbsp;</p>
+<h3><a name="windows-10-second-stall" id="windows-10-second-stall"></a>Windows Standalone: Extra 10 second stall when pressing Play in the Unity editor and when running a build</h3>
+<p>Reorts have been coming in recently of a 10 second stall when pressing Play in the Unity editor and when launching the game build. Every single instance of this has turned out to be a problem getting information from some piece of hardware attached to the system. This has happened with Corsair keyboards and a Mayflower Electronics headphone amplifier so far, but could potentially be caused by any HID device.</p>
+<p>When a problem device is present, a 5-second stall happens when certain information is queried about the HID device such as getting the Product Name using the Windows API function HidD_GetProductString. This function may be called twice leading to a 10 second stall. This is a problem at the device / driver level and cannot be fixed in Rewired. Because of the sudden influx of reports like this, I can only make the educated guess that this is directly due to a new change in Windows in a recent update resulting in the 5-second stall with these devices. There is no other explanation because none of this code has changed in years, and before 2020, there were zero reports of anything like this from Rewired users.</p>
+<p>This issue is not isolated to Rewired. Every single application that calls HidD_GetProductString on these devices will experience this stall. This has been reproduced using a HID library with one of these devices. Microsoft's Direct Input itself is also subject to this issue when getting the list of devices, with reports of this happening on the web. Even Microsoft's USB Game Controller tool in Windows apparently is affected by this, causing stalls and even crashing. There are also reports of this happening with SDL2, a hugely-popular cross-platform library.</p>
+<p>This issue cannot be &quot;fixed&quot; because it is not an issue in Rewired but in the underlying device/driver/Windows API. The best way to resolve it is to identify the device or driver causing it and remove it or disable it in Device Manager. Some devices like the Mayflower Electronics headphone amplifier expose a HID device in Device Manager that can be disabled without affecting the functionality of the device itself.</p>
+<p>&nbsp;</p>
+<hr />
+<h3><a name="windows-standalone-il2cpp-vs2019-hang" id="windows-standalone-il2cpp-vs2019-hang"></a>Windows Standalone, IL2CPP: Builds never finish or built exe hangs at launch</h3>
+<p>Due to a new compiler bug in Visual Studio 2019 16.5, when built with IL2CPP for the Windows Standalone target with Visual Studio 2019 installed, the build may never finish (hang during compile) or the built executable may hang after launch. This issue can be avoided by uninstalling Visual Studio 2019 and installing Visual Studio 2017, or you can use one of the following workarounds to make builds work again in VS 2019.</p>
+<p><a href="https://forum.unity.com/threads/neverending-il2cpp-build.855235/#post-5703478">Please see this forum post for details of the issue and workarounds.</a></p>
+<p>&nbsp;</p>
+<hr />
 <h3><a name="windows-standalone-il2cpp" id="windows-standalone-il2cpp"></a>Windows Standalone, IL2CPP: Rewired falls back to Unity input</h3>
 <p>Support for IL2CPP on desktop platforms was added in Rewired 1.1.22.0.</p>
 <p><strong>Solution:</strong> <a href="Updating.html">Update Rewired</a>.</p>
@@ -541,6 +560,7 @@ to
 <p>&nbsp;</p>
 <hr />
 <h3><a name="assembly-errors-2019-2" id="assembly-errors-2019-2"></a>Assembly errors in projects upgraded to Unity 2019.2</h3>
+<p><strong>Update:</strong> This bug was fixed in Unity 2020.1.0a13.</p>
 <p>Projects upgraded to Unity 2019.2 from a previous version (including a beta version) may report the following errors:</p>
 <pre class="code">- Error: Could not load signature of
 Rewired.ComponentControls.Effects.TouchInteractableTransitioner:get_transitionColorTint
@@ -562,7 +582,7 @@ signature:<none>
 <p>The resolution to this issue is to simply ignore the errors. They will not be shown again when the editor is closed and restarted. Note, the errors may return if doing a &quot;Reimport All&quot; operation, but again, they're just costmetic.</p>
 <p>&nbsp;</p>
 <hr />
-<h3><a name="assembly-errors-2019-3-alpha-beta" id="assembly-errors-2019-3-alpha-beta"></a>Assembly errors in 2019.3 alpha/beta</h3>
+<h3><a name="assembly-errors-2019-3-alpha-beta" id="assembly-errors-2019-3-alpha-beta"></a>Assembly and build errors in 2019.3 alpha/beta</h3>
 <p>First, <a href="Troubleshooting.html#unity-alpha-beta-preview-experimental">alpha, beta, preview, and experimental, versions and features of Unity are not suppored</a>.</p>
 <p>Rewired may not be compatible with Unity 2019.3 alpha. If you install Rewired you may see the following errors:<br />
 </p>
@@ -578,6 +598,28 @@ Assembly 'Assets/Rewired/Internal/Libraries/Runtime/Rewired_Windows.dll' will no
 Reference has errors 'Rewired_Core'.</pre>
 <p>Unity has made a major breaking change. The Unity UI library has been moved from UnityEngine.UI.dll as part of the core Unity installation to Unity.ugui.dll as an optional install through the Package Manager. This change to the DLL name which breaks all assembly references in Rewired's DLLs. This issue affects all DLLs that reference Unity UI, not just Rewired, including many of the most popular assets on the Unity Asset Store. There is no possible workaround to this issue.</p>
 <p>Unity has acknowledged these changes as a mistake and has made changes to allow DLLs to work again in a later alpha/beta release. <a href="https://forum.unity.com/threads/ui.673504/">See this forum thread for more details</a>. However, even though they have made changes to make it work again, it does have side effects with possible errors being reported when upgrading a project from an older version of Unity. <a href="#assembly-errors-2019-3-alpha-beta">See this for more information.</a></p>
+<p>You may also get the following error when you try to make a build. This error will go a way the next time you attempt a build, but will come back at the following build. Every other build attempt will result in the following failure. This is a known Unity issue and has a <a href="https://issuetracker.unity3d.com/issues/android-build-and-run-fails-when-rewired-is-present-in-the-project?_ga=2.154422527.616726974.1573495467-1748309352.1525716169">bug tracker page</a> here. <strong>Update:</strong> This bug has reportedly been fixed in the latest 2019.3 beta and 2020.1 alpha.</p>
+<pre class="code">Type '[Rewired_Core]Rewired.ComponentControls.Effects.TouchInteractableTransitioner' has an extra field '_transitionColorTint' of type 'UnityEngine.UI.ColorBlock' in the player and thus can't be serialized (expected '_syncFadeDurationWithTransitionEvent' of type 'System.Boolean')
+
+...
+
+Fields serialized in target platform, class 'Rewired.ComponentControls.TouchInteractable'
+'_interactable' of type 'System.Boolean'
+'_visible' of type 'System.Boolean'
+'_hideWhenIdle' of type 'System.Boolean'
+'_allowedMouseButtons' of type 'Rewired.ComponentControls.TouchInteractable+MouseButtonFlags'
+'_transitionType' of type 'Rewired.ComponentControls.TouchInteractable+TransitionTypeFlags'
+'_transitionColorTint' of type 'UnityEngine.UI.ColorBlock'
+'_transitionSpriteState' of type 'UnityEngine.UI.SpriteState'
+'_transitionAnimationTriggers' of type 'UnityEngine.UI.AnimationTriggers'
+'_targetGraphic' of type 'UnityEngine.UI.Graphic'
+'_onInteractionStateTransition' of type 'Rewired.ComponentControls.TouchInteractable+InteractionStateTransitionEventHandler'
+'_onVisibilityChanged' of type 'Rewired.ComponentControls.TouchInteractable+VisibilityChangedEventHandler'
+'_onInteractionStateChangedToNormal' of type 'UnityEngine.Events.UnityEvent'
+'_onInteractionStateChangedToHighlighted' of type 'UnityEngine.Events.UnityEvent'
+'_onInteractionStateChangedToPressed' of type 'UnityEngine.Events.UnityEvent'
+'_onInteractionStateChangedToDisabled' of type 'UnityEngine.Events.UnityEvent'
+</pre>
 <p>&nbsp;</p>
 <hr />
 <h3><a name="increased-compile-play-time-editor" id="increased-compile-play-time-editor"></a>Rewired increases compile time and load time after pressing Play in the editor</h3>
@@ -757,6 +799,22 @@ public class RewiredCustomController_AndroidRemote : MonoBehaviour {
   <li>1.1.13.0</li>
   </ul>
 <p>Rewired 1.1.14.0+ is known to work correctly.</p>
+<p>&nbsp;</p>
+<hr />
+<p>&nbsp;</p>
+<h2><a name="ios-tvos" id="ios-tvos"></a>iOS / tvOS</h2>
+<p>&nbsp;</p>
+<h3><a name="ios-tvos-pause-menu-dont-work" id="ios-tvos-pause-menu-dont-work"></a>Gamepad Pause button and Siri Remote Menu button don't work</h3>
+<p>This is a Unity bug. They introduced this bug when they added support for iOS 13. This bug affects various versions of Unity 2018.4, 2019.2, 2019.3, and 2020.1. This bug was fixed in the 2018.4, 2019.3, and 2020.1 branches. <a href="https://issuetracker.unity3d.com/issues/tvos-menu-button-on-siri-remote-returns-joystick1button19-instead-of-joystick1button0?_ga=2.29496572.273187001.1582997386-1748309352.1525716169" target="_blank">The bug tracker can be found here</a>.</p>
+<p>The easiest way to fix this problem is to update Unity to a version that contains the fix. If you are using a version of Unity that was not updated and you do not want to update it, see these messages for a workaround:<br />
+  <a href="https://forum.unity.com/threads/rewired-advanced-input-for-unity.270693/page-119#post-5430810" target="_blank">https://forum.unity.com/threads/rewired-advanced-input-for-unity.270693/page-119#post-5430810</a><br />
+  <a href="https://forum.unity.com/threads/rewired-advanced-input-for-unity.270693/page-119#post-5438304" target="_blank">https://forum.unity.com/threads/rewired-advanced-input-for-unity.270693/page-119#post-5438304</a></p>
+<p>&nbsp;</p>
+<hr />
+<h3><a name="ios-tvos-13-gamepad-left-stick-x-not-working" id="ios-tvos-13-gamepad-left-stick-x-not-working"></a>iOS/tvOS 13: Gamepad left stick X doesn't work</h3>
+<p>This is a Unity bug. They introduced this bug when they added support for iOS 13. This bug affects various versions of Unity 2018.4, 2019.2, 2019.3, and 2020.1</p>
+<p>Edit the iPhone_Sensors.mm file generated by Unity in the Xcode project:<br />
+  <a href="https://forum.unity.com/threads/rewired-advanced-input-for-unity.270693/page-119#post-5438304" target="_blank">https://forum.unity.com/threads/rewired-advanced-input-for-unity.270693/page-119#post-5438304</a></p>
 <p>&nbsp;</p>
 <hr />
 <h3>&nbsp;</h3>

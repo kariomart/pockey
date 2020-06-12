@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
 
     public int playerId;
-    private Player rewiredPlayer;
+    public Player rewiredPlayer;
+    public Joystick joystick;
+    public Controller controller;
 
     Rigidbody2D rb;
     public SpriteRenderer spr;
@@ -68,12 +71,22 @@ public class PlayerController : MonoBehaviour
 
     public bool stunned;
 
+    public int controllerId = 0;
+
+
 
     // Start is called before the first frame update
     public void Start()
     {
         flicking = false;
-        rewiredPlayer = ReInput.players.GetPlayer(playerId);
+
+        //rewiredPlayer = ReInput.players.GetPlayer(playerId);
+        //Debug.Log(ReInput.controllers.GetJoysticks());
+        //joystick = ReInput.controllers.GetJoystick(playerId);
+        
+
+        //Master.me.controllerText[playerId].text = "" + joystick.name;
+        
         rb = GetComponent<Rigidbody2D>();
         spr = transform.GetChild(0).GetComponent<SpriteRenderer>();
         SetColor(Master.me.playerColors[playerId]);
@@ -92,18 +105,21 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    public void LateStart() {
+
+
+    }
+
     // Update is called once per frame
     void Update()
     {
+
 
         if (Input.anyKeyDown && Master.me.gameOver) {
             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
             Time.timeScale = 1;
         }
 
-         if (rewiredPlayer.GetButtonDown("UICancel") && Master.me.gamePaused) {
-            Master.me.PauseGame();
-        }
 
         if (rewiredPlayer.GetButtonDown("Start")) {
             Master.me.PauseGame();

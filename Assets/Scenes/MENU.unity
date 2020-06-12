@@ -642,7 +642,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 202935410}
-  - component: {fileID: 202935409}
   m_Layer: 0
   m_Name: MASTER
   m_TagString: Untagged
@@ -650,83 +649,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &202935409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202935408}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b16d38da3bc04e628fb7c31683c38f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 7840336748390805826, guid: 296ac86e452084b8fab716c2452429d0,
-    type: 3}
-  goalieObj: {fileID: 931424078374955811, guid: cf869e1f000a249208483df5f92a3185,
-    type: 3}
-  puckObj: {fileID: 3789613715229179722, guid: 05c6534c93372431e9d83738b7686b93, type: 3}
-  goaliesEnabled: 0
-  collided: 0
-  numPlayers: 2
-  players: []
-  goals: []
-  playerColors:
-  - {r: 1, g: 0.3443396, b: 0.3443396, a: 1}
-  - {r: 0.2688679, g: 0.5266299, b: 1, a: 1}
-  - {r: 0.18396229, g: 1, b: 0.29622763, a: 1}
-  - {r: 0.9433588, g: 0.2216981, b: 1, a: 1}
-  puckColors:
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 1, g: 0.7533275, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0.9039521, a: 1}
-  spawnPos:
-  - {x: -14.3686, y: 9.965195}
-  - {x: 14.3686, y: 9.965195}
-  goalPos:
-  - {x: -43.94, y: 10}
-  - {x: 43.94, y: 10}
-  goalSize: 8
-  goalsScored: 0
-  multiplier: 0000000000000000
-  spawnedBumpers: {fileID: 0}
-  puck: {fileID: 0}
-  pucks: []
-  puckSpawn: {fileID: 0}
-  livePoints: 0
-  pointsToWin: 10
-  periodNum: 1
-  livePointsUI:
-  - {fileID: 1075874764}
-  - {fileID: 1064602866}
-  - {fileID: 466217031}
-  team1PointsUI: {fileID: 355988253}
-  team2PointsUI: {fileID: 1624855130}
-  timerUI: {fileID: 1561244915}
-  bg: {fileID: 1283798332}
-  collisionParticle: {fileID: 5133472781799596058, guid: e820da44ab915497fa1b8421798544b4,
-    type: 3}
-  shake: {fileID: 0}
-  sfx_goal: {fileID: 8300000, guid: 50434e547f5e748d6b806b9601f8ab7d, type: 3}
-  coinFX: {fileID: 8306631820573783929, guid: c1d75ca0b2c9348f7a96912f70547d50, type: 3}
-  scanVFX: {fileID: 4770954407249713929, guid: a944261ffa3fe470383fa0177a7be36f, type: 3}
-  angledBouncerVFX: {fileID: 5528122150738209591, guid: c6007e2bd6bae4ffa8afbbd356455710,
-    type: 3}
-  bouncers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  gameTime: 0
-  periodLength: 60
-  randomPuckMode: 1
-  startMenu: {fileID: 473020270}
-  gamePaused: 0
-  gameOver: 0
-  gameOverScreen: {fileID: 852132022}
-  winnerText: {fileID: 670944990}
-  winnerBg: {fileID: 565924828}
 --- !u!4 &202935410
 Transform:
   m_ObjectHideFlags: 0
@@ -2275,6 +2197,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startButton: {fileID: 1202520772}
   selection: {fileID: 0}
+  selectedItem: {fileID: 0}
+  selectionChangedSound: {fileID: 0}
+  selectedSound: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!114 &473020273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2296,6 +2222,8 @@ MonoBehaviour:
   periodVals: b4000000780000003c0000001e0000002c010000
   periodIndex: 0
   periodValText: {fileID: 1668088733}
+  musicSource: {fileID: 0}
+  sfxMaxVol: 0
 --- !u!82 &473020274
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7885,6 +7813,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InputManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8790823180985026405, guid: ed3b381e7b0c844ff86113bfa0c145e8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed3b381e7b0c844ff86113bfa0c145e8, type: 3}

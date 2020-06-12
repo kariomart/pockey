@@ -367,10 +367,6 @@ MonoBehaviour:
       joystickId: 5
       joystickId2: 0
       splitAxis: 0
-    - templateId: 13
-      joystickId: 5
-      joystickId2: 0
-      splitAxis: 0
   - id: 1
     name: Logitech Dual Action
     joystickGuid: 886dd9d4-58ce-4212-90f5-2967676e7823
@@ -6666,11 +6662,11 @@ MonoBehaviour:
       joystickId2: 0
       splitAxis: 0
     - templateId: 14
-      joystickId: 13
+      joystickId: 14
       joystickId2: 0
       splitAxis: 0
     - templateId: 15
-      joystickId: 14
+      joystickId: 13
       joystickId2: 0
       splitAxis: 0
     - templateId: 16

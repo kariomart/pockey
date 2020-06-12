@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Rewired;
 
 public class Master : MonoBehaviour
 {
@@ -66,12 +67,33 @@ public class Master : MonoBehaviour
     public AudioClip powerDown;
     public AudioClip periodOver;
     public AudioClip countdownSFX;
+    public TextMeshProUGUI[] controllerText;
+    public TextMeshProUGUI debugText;
+    public int controllerIndex;
+    public Controller j1;
+    public Controller j2;
 
     // Start is called before the first frame update
+
+    void Awake() {
+       
+
+        debugText.text += "AWAKE FINISHED\n";
+    }
     void Start()
     {
+
+        //PlayerPrefs.DeleteAll ();   
         Initialize();
         players = new PlayerController[numPlayers];
+        // ReInput.ControllerConnectedEvent += OnControllerConnected;
+
+        // foreach(Joystick j in ReInput.controllers.Joysticks) {
+        //     if(ReInput.controllers.IsJoystickAssigned(j)) continue; // Joystick is already assigned
+        //     // Assign Joystick to first Player that doesn't have any assigned
+        //     AssignJoystickToNextOpenPlayer(j);
+        // }
+        //Rewired.Controller.Controller.
         GameObject[] goalObjs = GameObject.FindGameObjectsWithTag("Goal");
         goals = new GoalController[goalObjs.Length];
         for (int i = 0; i < goalObjs.Length; i++)
@@ -85,9 +107,68 @@ public class Master : MonoBehaviour
         UpdateUI();
         defColor = bg.color;
         gameTime = periodLength;
+        debugText.text += "START FINISHED\n";
+
+        foreach(Joystick j in ReInput.controllers.Joysticks) {
+            if(ReInput.controllers.IsJoystickAssigned(j)) continue; // Joystick is already assigned
+            // Assign Joystick to first Player that doesn't have any assigned
+            //AssignJoystickToNextOpenPlayer(j);
+        }
+        
         //randomPuckMode = true;
     }
+
+    void AssignJoystickToNextOpenPlayer(Joystick j) {
+
+        foreach(PlayerController p in players) {
+            if(p.rewiredPlayer.controllers.joystickCount > 0) continue; // player already has a joystick
+                p.rewiredPlayer.controllers.AddController(j, true); // assign joystick to player
+                return;
+        }
+    }
+
+
+     void OnControllerConnected(ControllerStatusChangedEventArgs args) {
+        //AssignJoystickToNextOpenPlayer(args.joystick);
+    //     Debug.Log("A controller was connected! Name = " + args.name + " Id = " + args.controllerId + " Type = " + args.controllerType);
+    //     debugText.text += "A controller was connected! Name = " + args.name + " Id = " + args.controllerId + " Type = " + args.controllerType + "\n";
+    //     if (controllerIndex < players.Length) {
+    //         players[controllerIndex].rewiredPlayer = ReInput.players.GetPlayer(controllerIndex);
+    //         players[controllerIndex].rewiredPlayer.controllers.AddController(args.controller, true);
+    //         players[controllerIndex].enabled = true;
+    //         controllerText[controllerIndex].text = "" + args.name;
+    //         controllerIndex++;
+    //         controllerIndex %= players.Length;
+    //     }
+     }
   
+    public void NextController(int id) {
+        PlayerController p = players[id];
+        p.controllerId++;
+        int nextNum = (id + p.controllerId) % ReInput.controllers.joystickCount;
+        Controller next = ReInput.controllers.Joysticks[nextNum];
+        controllerText[id].text = "PLAYER"+id + "\t" +	next.name + 	"\t2315" + "\t\t\tSM2097";
+        if (id == 0) {
+            j1 = next;
+        } else {
+            j2 = next;
+        }
+        // p.rewiredPlayer.controllers.AddController(next, true);
+
+        // controllerText[1-id].text = p.rewiredPlayer.controllers.Joysticks[0].name;
+    }
+
+    public void SetJoysticks() {
+        Debug.Log(players[0] + " " + players[0].rewiredPlayer + " " + j1);
+
+        if (j1 != null) {
+            players[0].rewiredPlayer.controllers.AddController(j1, true);
+        } 
+
+        if (j2 != null) {
+            players[1].rewiredPlayer.controllers.AddController(j2, true);
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -96,6 +177,13 @@ public class Master : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) {
             randomPuckMode = !randomPuckMode;
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Debug.Log("!");
+            PauseGame();
+        }
+
+        //controllerText.text = players[0].rewiredPlayer.id + "\n" + players[1].rewiredPlayer.id;
 
         // if (gameTime > 60) {
         //     timerUI.text = "" + (int)(gameTime/60f) + ":" + (int)(gameTime % 60);
@@ -108,6 +196,7 @@ public class Master : MonoBehaviour
 
         
     }
+    
 
     void FixedUpdate() {
 
@@ -142,11 +231,6 @@ public class Master : MonoBehaviour
             
         }
 
-
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            //UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-            NewPeriod();
-        }
 
         int r = Random.Range(0, 2000);
         r *= pucks.Count;
@@ -245,7 +329,6 @@ public class Master : MonoBehaviour
         livePoints = 0;
         UpdateUI();
         gameTime = periodLength;
-        PauseGame();
     }
     
 
@@ -289,14 +372,15 @@ public class Master : MonoBehaviour
     }
 
     public void PauseGame() {
-
         if (!gamePaused) {
             SoundController.me.PlaySound(powerUp, 1f);
+            Debug.Log("??");
             startMenu.SetActive(true);
             Time.timeScale = 0;
             gamePaused = true;
             musicSource.Pause();
         } else {
+            SetJoysticks();
             startMenu.SetActive(false);
             Time.timeScale = 1;
             gamePaused = false;
@@ -455,8 +539,10 @@ public class Master : MonoBehaviour
         {
             GameObject playerObj = Instantiate(playerPrefab, spawnPos[i], Quaternion.identity);
             PlayerController playerController = playerObj.GetComponent<PlayerController>();
+            //playerController.enabled = false;
             playerController.playerId = i%2;
             players[i] = playerController;
+            players[i].rewiredPlayer = ReInput.players.GetPlayer(i);
 
             if (goaliesEnabled)
             {
